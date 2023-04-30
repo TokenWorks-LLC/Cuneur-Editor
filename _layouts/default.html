@@ -348,7 +348,7 @@ $(document).ready(function () {
   var anno;
   var annolist;
   window.onload = function() {
-    sources=urls[$('#images option:selected').val()]["variants"]
+    sources=renderingurls[$('#images option:selected').val()]["variants"]
     tsources=[]
     annolist={}
     jQuery.ajaxSetup({async:false});
