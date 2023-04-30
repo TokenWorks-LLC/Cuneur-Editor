@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html>
+  {% include head.html %}
+  <body>
+{% include header.html %}
+<!--<h1 align="center">Cuneiform Annotator</h1>-->
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <script src="js/lib/gitbeaker.js"></script>
+  <script src="js/lib/jtflib.js"></script>
+  <script src="js/lib/annotorious-sequence-mode.js"></script>
+  <script src="js/lib/recogito-semantic-tags.js"></script>
+  <script src="js/lib/FileSaver.js"></script>
+  <script src="js/lib/openseadragon-screenshot.js"></script>
+  <script type="text/javascript" src="js/data/transliterations.js"></script>
+  <script type="text/javascript" src="js/data/hs2CDLI.js"></script>
+  <script type="text/javascript" src="js/data/3dmodels.js"></script>
+  <script type="text/javascript" src="js/data/approvals.js"></script>
+  <script type="text/javascript" src="js/data/periods.js"></script>
+  <script type="text/javascript" src="js/data/character_postags2.js"></script>
+  <script type="text/javascript" src="js/data/translitcount.js"></script>
+  <script type="text/javascript" src="js/data/languages.js"></script>
+  <script type="text/javascript" src="js/data/cuneifymap.js"></script>
+  <script type="text/javascript" src="js/data/charlistmap.js"></script>
+  <script type="text/javascript" src="js/conf/annotatorconf.js"></script>
+  <script type="text/javascript" src="js/annotatorfunctions.js"></script>
+<style>
+datalist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  writing-mode: vertical-lr;
+  width: 200px;
+}
+.info { 
+	position				:absolute; 
+	z-index					:1;
+	/* width					:200px;  */
+	/* height					:200px; */
+	/* top						:50%;  */
+	bottom                  :30;
+	right					:0; 
+	background-color		:rgba(74, 74, 74, 0.6); 
+	/* border					:4px solid rgba(0, 0, 0, 1.0); */
+	border-radius           :10px;
+	/* overflow                :auto; */
+	-webkit-user-select		:none; 
+	-webkit-touch-callout	:none; 
+	-khtml-user-select		:none; 
+	-moz-user-select		:none; 
+	-ms-user-select			:none; 
+	user-select				:none; 
+	touch-action			:none; 
+	-ms-touch-action		:none; 
+}
+
+.infospot_panel { 
+	color					:#f8f8f8;
+	font-family				:arial; 
+	/* text-transform			:uppercase; */
+	text-align				:left; 
+	-webkit-user-select		:none; 
+	-webkit-touch-callout	:none; 
+	-khtml-user-select		:none; 
+	-moz-user-select		:none; 
+	-ms-user-select			:none; 
+	user-select				:none; 
+	touch-action			:none; 
+	-ms-touch-action		:none; 
+}
+
+.infospot_title { 
+	/* font-family				:"Arial";  */
+	font-size				:2em; 
+	-webkit-user-select		:none; 
+	-webkit-touch-callout	:none; 
+	-khtml-user-select		:none; 
+	-moz-user-select		:none; 
+	-ms-user-select			:none; 
+	user-select				:none; 
+	touch-action			:none; 
+	-ms-touch-action		:none; 
+}
+
+.infospot_subtitle { 
+	color					:#e5352c;
+	/* font-family				:"BertholdAkzidenzGroteskMedium";  */
+	font-size				:0.7em;
+	font-weight				:bold;
+	text-align				:justify; 
+	-webkit-user-select		:none; 
+	-webkit-touch-callout	:none; 
+	-khtml-user-select		:none; 
+	-moz-user-select		:none; 
+	-ms-user-select			:none; 
+	user-select				:none; 
+	touch-action			:none; 
+	-ms-touch-action		:none; 
+}
+
+.infospot_text { 
+	/* font-family				:"BertholdAkzidenzGroteskMedium";  */
+	font-size				:1.em; 
+	text-align				:left; 
+	-webkit-user-select		:none; 
+	-webkit-touch-callout	:none; 
+	-khtml-user-select		:none; 
+	-moz-user-select		:none; 
+	-ms-user-select			:none; 
+	user-select				:none; 
+	touch-action			:none; 
+	-ms-touch-action		:none; 
+}
+
+.infospot_meta { 
+	font-size				: 0.8em; 
+	font-style              : italic;
+	text-align				: left; 
+	-webkit-user-select		: none; 
+	-webkit-touch-callout	: none; 
+	-khtml-user-select		: none; 
+	-moz-user-select		: none; 
+	-ms-user-select			: none; 
+	user-select				: none; 
+	touch-action			: none; 
+	-ms-touch-action		: none; 
+}
+
+.infospot_names { 
+	font-size				: 0.8em; 
+	font-style              : italic;
+	text-align				: left; 
+	-webkit-user-select		: none; 
+	-webkit-touch-callout	: none; 
+	-khtml-user-select		: none; 
+	-moz-user-select		: none; 
+	-ms-user-select			: none; 
+	user-select				: none; 
+	touch-action			: none; 
+	-ms-touch-action		: none; 
+}
+
+.infospot_url { 
+	font-size				: 0.7em; 
+	text-align				: left; 
+	-webkit-user-select		: none; 
+	-webkit-touch-callout	: none; 
+	-khtml-user-select		: none; 
+	-moz-user-select		: none; 
+	-ms-user-select			: none; 
+	user-select				: none; 
+	touch-action			: none; 
+	-ms-touch-action		: none; 
+}
+#x {
+    position: absolute;
+    background-color		:rgba(255, 255, 255, 1.0); 
+	border					:1px solid rgba(74, 74, 74, 0.6);
+	border-radius           :10px;
+    color: rgba(74, 74, 74, 1.0);
+    top: 0px;
+    right: 0px;
+	cursor: pointer;
+}
+#grid-source { position: absolute; }
+#grid-overlay { position: relative; }
+.r6o-editor { width:550px !important z-index: 2500}
+.hover { background-color: rgba(0,0,0,0.1) !important; }
+.unselected { background-color: rgba(0,0,0,0.5); }
+.selected { background-color: none; }
+.indexhighlight {border-color: red; stroke:red !important;}
+</style>
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6" role="main">
+Tablet: <select id="images" onchange="loadVariants()"></select> Side: <select id="imageside" onchange="viewer.goToPage(document.getElementById('imageside').selectedIndex)"></select><!--onchange="reinit(null)"-->
+<button id="saveAnnotations" onclick="saveTextAsFile(JSON.stringify(curanno),'json','anno')">Export Annotations</button>
+<button id="showTransliteration" onClick='document.getElementById("transliterationdialog").show();'>Transliteration</button><button id="showTranslation" onClick='document.getElementById("translationdialog").show();'>Translation</button><button id="highlightinconsistencies" onclick="highlightAnnotationsByTransliterationInconsistency()">Highlight Inconsistencies</button><!--<button id="showPaleoCode" onClick='document.getElementById("paleocodedialog").show();'>PaleoCodes</button>--><a id="referencelink" href="#"></a>&nbsp;Annotation Mode:<select id="annomode"><option value="sign">Sign</option><option value="wedge">Wedge</option></select><br/>
+<!--Tagsets: CharacterSet: <input type="radio" id="characterset"> LinguisticAnnotation: <input type="radio" id="linguisticset"/>-->
+<script>
+
+const queryString = window.location.search;
+console.log(queryString);
+const urlParams = new URLSearchParams(queryString);
+console.log(urlParams)
+const tabletid = urlParams.get('tabletid');
+const columnindex = urlParams.get('column');
+const sideid = urlParams.get('sideid');
+const tside = urlParams.get('side');
+const lineindex = urlParams.get('line');
+const charindexparam = urlParams.get('charindex');
+const annotationids = urlParams.get('annotations');
+const firststart=true
+var preferredannotation="sign"
+console.log(tabletid+" "+tside+" "+annotationids)
+valresult={}
+function toggleTransliterationEdit(){
+  if ( $("#transliterationtextarea").attr("contenteditable") == "true") {
+    $("#transliterationtextarea").attr("contenteditable","false")
+    $('#transliterationtextarea').html($('#transliterationtextarea').html().replaceAll("<br>","\n").replaceAll("<br/>","\n").replaceAll(/&nbsp;/g,' '))
+    thetext=$('#transliterationtextarea').text().replaceAll("  "," ")
+    atftext=atftext.replaceAll("\n\n","\n").replaceAll(" \n","\n")
+    atftext=atftext.replace("@Tablet","@tablet").replace("@obverse","@obverse ")
+    atftext=atftext.replace("@tablet","@tablet ")
+    myatftext="&P134316 = TMH NF 1-2, 004 \n#atf: lang sux \n"+atftext
+    valresult=validateATF(myatftext)
+    $('#transliterationtextarea').html(formatTransliteration(atftext.replaceAll("\n","<br>")))
+    $('#transliterationdialogmessage').html("Edited Transliteration "+$('#images option:selected').val()+": Changes are not yet saved in Git!<br>ATF Validation Status: "+valresult)
+  } else {
+    $("#transliterationtextarea").attr("contenteditable","true")
+  }
+}
+
+function findGetParameter(parameterName) {
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+}
+
+function reload3DURLs(){
+  console.log("Reloading URLs for 3D")
+  options2=""
+  for(url in models3D){
+    options2+="<option value=\""+models3D[url][document.getElementById('dataformaturl').value]+"\">"+url+"</option>"
+    threedimageToIndex[url]=threedimageindex
+    threedimageindex+=1
+  }
+  document.getElementById("3dimages").innerHTML=options2
+  //$('#3dimages').selectize().clear()
+  //$('#3dimages').selectize().load()
+  /*      $('#3dimages').selectize({
+          sortField: 'text',
+          maxOptions: 5000
+      });*/
+}
+
+async function saveTransliterationJSON(){
+  console.log($("#transliterationtextarea").text())
+  htmltext=$("#transliterationtextarea").html().replaceAll("<br>","\n").replaceAll("<br/>","\n").replaceAll(/&nbsp;/g,' ')
+  savetext=$(htmltext).text()
+  transliterations[$('#images option:selected').val()]=savetext
+  saveTransliteration($('#images option:selected').val(),transliterations)
+  $('#transliterationdialogmessage').html("Transliteration "+$('#images option:selected').val()+" saved successfully!")
+}
+
+async function saveAnnotations(){
+  console.log($("#transliterationtextarea").text())
+  htmltext=$("#transliterationtextarea").html().replaceAll("<br>","\n").replaceAll("<br/>","\n").replaceAll(/&nbsp;/g,' ')
+  savetext=$(htmltext).text()
+  transliterations[$('#images option:selected').val()]=savetext
+  saveTransliteration($('#images option:selected').val(),transliterations)
+  $('#transliterationdialogmessage').html("Transliteration "+$('#images option:selected').val()+" saved successfully!")
+}
+
+async function saveTransliterationAnnotationJSON(){
+  console.log(r.getAnnotations())
+  console.log(curtextanno)
+  curtextanno=r.getAnnotations()
+  commitTextAnnotationData()
+  $('#transliterationdialogmessage').html("Text Annotations for Transliteration "+$('#images option:selected').val()+" saved successfully!")
+}
+
+
+function validateATF(atfstring){
+  result=jtflib.ATF2JTF(atfstring)
+  console.log(result)
+  if("success" in result && result["success"]==false){
+      resstring=""
+      for(err in result["errors"]){
+        console.log(result["errors"][err])
+        resstring+=result["errors"][err]["text"]+"<br>"
+      }
+      console.log(resstring)
+      return resstring
+  }
+  return "Valid" 
+}
+var elt;
+var clonedtransliteration;
+function addTransliterationOverlay(fullScreen){
+    console.log("Add overlay.... and the fullscreen is.... "+fullScreen)
+    var elt = document.createElement("div");
+    elt.id = "transliterationoverlay";
+    elt.className = "highlight";
+    elt.style="background-color:white;font-size:34"
+    if(!fullScreen && typeof $('#transliterationtextarea') !== 'undefined'){
+      clonedtransliteration=document.getElementById('transliterationtextarea').cloneNode(true)
+      viewer.cloned=clonedtransliteration
+      console.log("Setting cloned translit...")
+      console.log(clonedtransliteration)
+      console.log(viewer.cloned)
+    }else{
+      cloned=viewer.cloned
+      console.log(viewer.cloned)
+      console.log(clonedtransliteration)
+      elt.innerHTML=viewer.cloned.innerHTML
+      console.log(clonedtransliteration.innerHTML)
+      console.log(viewer.cloned.innerHTML)
+      viewer.addOverlay({
+          element: elt,
+          location: new OpenSeadragon.Rect(1.1, 0, 1, 1)
+      });
+    }
+}
+
+$(document).ready(function () {
+      $('#images').selectize({
+          sortField: 'text',
+          maxOptions: 5000
+      });    
+      $('#3dimages').selectize({
+          sortField: 'text',
+          maxOptions: 5000
+      });
+      
+      loadVariants();
+  });
+
+  var options=""
+  var options2=""
+  for(url in urls){
+    if(url==tabletid){
+      options+="<option value=\""+url+"\" selected=\"selected\">"+url+"</option>"
+    }else{
+      options+="<option value=\""+url+"\">"
+    }
+    if(url in transliterations){
+      options+=url+" (T)</option>"
+    }else{
+      options+=url+"</option>"
+    }
+  }
+  document.getElementById("images").innerHTML=options
+  var index=0;
+  var translitwasclicked=false
+  var websiteprefix="{{site.baseurl}}"
+  var curanno={}
+  var curtextanno={}
+  var tabletparam=findGetParameter("tablet")
+  var curcharindex={}
+  var curimgindex={}
+  var viewer;
+  var anno;
+  var annolist;
+  window.onload = function() {
+    sources=urls[$('#images option:selected').val()]["variants"]
+    tsources=[]
+    annolist={}
+    jQuery.ajaxSetup({async:false});
+    i=0
+    for(src of sources){
+      tsources.push({"type":"image","url":src["url"]})
+      annolist[src["label"]+".json"]=[]
+      $.getJSON(gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+encodeURIComponent(src["label"]+".json")+"/raw?ref="+branch+"&access_token="+gitlabtoken, function(result){
+      console.log(result)
+        annotations=[]
+        for(ann in result){
+          annotations.push(result[ann])
+        }
+        curanno=result
+        //const annotations = result.map(a => new WebAnnotation(a));
+        annolist[src["label"]+".json"]=annotations
+        //anno.setAnnotations(annotations);
+      }).fail(function(jqXHR, textStatus, errorThrown) { console.log("ajax error")})
+    }
+    jQuery.ajaxSetup({async:true});
+    console.log(annolist)
+    try{
+        viewer.destroy()
+        anno.destroy()
+    }catch(e){
+        console.log(e)
+    }
+    $('#my-toolbar-container').html('<span style="text-align:right;position:absolute;right:0px"><button id="leftimage2" style="border-radius: 0 3px 3px 0;" onclick="loadLeftRendering()">&lt;&lt;</button><button id="rightimage2" onclick="loadRightRendering()" style="border-radius:3px 0 0 3px;">&gt;&gt;</button>Line:<input type="number" id="highlightline" value="-1" onChange="highlightIndexedChars(true)"/><button id="showIndexedChars" onClick="highlightIndexedChars(false)">Indexview</button><button id="fatcrossview" onclick="arrangeFatCross()">FC View</button><button onclick="showHideAnno()">Toggle</button><button id="saveInGit" onclick="commitData()">Save</button></span><span id="saveannotationsmessage" style="position:absolute;text-align:center;margin-top:40px;margin-right:80px;right:0px;"></span><br/>')
+    viewer = OpenSeadragon({
+      id: "openseadragon",
+      prefixUrl: "openseadragon/images/",
+      degrees: 0,
+      autoHideControls: true,
+      showRotationControl: true,
+      showFlipControl: true,
+      sequenceMode: true,
+      showReferenceStrip:true,
+      toolbar: "my-toolbar-container",
+      gestureSettingsTouch: {
+        pinchRotate: true
+      },
+      tileSources: tsources
+    });
+    viewer.screenshot({
+        showOptions: true, // Default is false
+        keyboardShortcut: 'p', // Default is null
+        showScreenshotControl: true // Default is true
+        
+    });
+    addTransliterationOverlay(viewer.isFullPage())
+    viewer.addHandler('pre-full-page', function(event){
+      console.log("FULLSCREEN HANDLER: ")
+      console.log(event)
+      if(event.fullPage){
+          addTransliterationOverlay(event.fullPage)
+        //$('#transliterationoverlay').show()
+        viewer.forceRedraw()
+      }else{
+          viewer.removeOverlay("transliterationoverlay")
+          //$('#transliterationoverlay').hide()
+          viewer.forceRedraw()
+      }
+    })
+    console.log("MLVOCAB: "+mlVocabulary)
+
+  var annoconfig={
+	  widgets:[  
+    TextMapWidget,'COMMENT',{ widget: 'TAG', 
+    vocabulary: mlVocabulary
+    }/*,recogito.SemanticTags({
+        dataSources: [  
+            'Wikidata', 
+            'VIAF'
+        ],
+        availableLanguages: [
+            'en', 'de', 'fa'
+        ],
+        limit: 10
+    })*/
+  ]}
+
+    // Initialize the Annotorious plugin
+    anno = OpenSeadragon.Annotorious(viewer,annoconfig);
+    //annotations = OpenSeadragon.Annotations({ viewer });
+    Annotorious.BetterPolygon(anno);
+    Annotorious.SelectorPack(anno);
+    Annotorious.Toolbar(anno, document.getElementById('my-toolbar-container'));
+    //Annotorious.SequenceMode(anno, viewer, {annolist});
+    viewer.addHandler('page', (page,userdata) => {
+        initAnnotationsForPage(page)
+    });
+
+
+  }
+
+
+
+function initAnnotationsForPage(page){
+    addTransliterationOverlay(viewer.isFullPage())
+    console.log("Page")
+    console.log(page)
+    console.log(annolist)
+    console.log(Object.keys(annolist))
+    console.log(Object.keys(annolist)[page["page"]])
+    console.log(annolist[Object.keys(annolist)[page["page"]]])
+    result=annolist[Object.keys(annolist)[page["page"]]]
+    anno.setAnnotations(annolist[Object.keys(annolist)[page["page"]]])
+    curanno={}
+    for(res in result){
+      curanno[result[res]["id"]]=result[res]
+    }
+    indexedchars = 0
+    indexedhiglighted = false
+    indexedcharids = []
+    for (ann in result) {
+      reIndexImageAnnotation(result[ann],page["page"])
+    }
+    anno.on('createAnnotation', function(a) {
+        console.log(a)
+        console.log(JSON.stringify(a))
+        curanno[a["id"]]=a
+        if(!(a["id"] in curimgindex)){
+          reIndexImageAnnotation(a,viewer.currentPage())
+        }
+    });
+    anno.on('mouseEnterAnnotation', function(annotation, event) {
+        console.log(annotation["id"])
+        console.log(curimgindex)
+        if(annotation["id"] in curimgindex){
+           console.log(curimgindex[annotation["id"]])
+           console.log($("span[name='"+curimgindex[annotation["id"]]+"']"))
+           $("span[name='"+curimgindex[annotation["id"]]+"']").each(function(i,el){
+              $(el).css({"backgroundColor": "yellow", "color": "red","border": "2px solid red"})
+           })   
+        }
+    });
+    anno.on('mouseLeaveAnnotation', function(annotation, event) {
+        if(annotation["id"] in curimgindex){
+          $("span[name='"+curimgindex[annotation["id"]]+"']").each(function(i,el){
+              $(el).css({"backgroundColor": "#f7f7f9", "color": "#bd4147","border": "0px"})
+          })
+        }
+    });
+    anno.on('selectAnnotation', function(annotation) {
+        if(annotation["id"] in curimgindex){
+          $("span[name='"+curimgindex[annotation["id"]]+"']").each(function(i,el){
+              $(el).css({"backgroundColor": "#f7f7f9", "color": "#bd4147","border": "0px"})
+          })     
+        }
+    });
+    anno.on('deleteAnnotation', function(a) {
+      delete curanno[a["id"]]
+    });
+    anno.on('updateAnnotation', function(a) {
+      curanno[a["id"]]=a
+      reIndexImageAnnotation(a,viewer.currentPage)
+    });
+    if(typeof(annotationids)!='undefined'){
+      for(annoid in annotationids){
+        highlightAnnotationById(annoid)
+      }
+    }
+    if(document.getElementById("imageside").selectedIndex!=page["page"]){
+      document.getElementById("imageside").selectedIndex=page["page"]
+    }
+}
+
+function loadLeft(){
+  viewer.setFullScreen(false)
+  curindex=document.getElementById("imageside").selectedIndex
+  if(curindex>0){
+    document.getElementById("imageside").selectedIndex=curindex-1
+    reinit(null)
+  }
+}
+
+function loadBottom(){
+  viewer.setFullScreen(false)
+  firstimageindex=0
+  document.getElementById("imageside").selectedIndex=firstimageindex+4
+  reinit(null)
+}
+
+function loadTop(){
+  viewer.setFullScreen(false)
+  firstimageindex=0
+  document.getElementById("imageside").selectedIndex=firstimageindex
+  reinit(null)
+}
+
+function loadLeftRendering(){
+  viewer.setFullScreen(false)
+  curindex=document.getElementById("imageside").selectedIndex
+  if(curindex-6>0){
+    document.getElementById("imageside").selectedIndex=curindex-6
+    reinit(null)
+  }
+}
+
+function loadRight(){
+  viewer.setFullScreen(false)
+  curindex=document.getElementById("imageside").selectedIndex
+  if(curindex<document.getElementById("imageside").length){
+    document.getElementById("imageside").selectedIndex=curindex+1
+    reinit(null)
+  }
+}
+
+function loadRightRendering(){
+  viewer.setFullScreen(false)
+  curindex=document.getElementById("imageside").selectedIndex
+  if(curindex<document.getElementById("imageside").length-6){
+    document.getElementById("imageside").selectedIndex=curindex+6
+    reinit(null)
+  }
+}
+
+</script>
+<div>
+    <div id="my-toolbar-container" style="background-color:white;"><span style="text-align:right;position:absolute;right:0px">
+<!--<button id="leftimage" style="border-radius: 0 3px 3px 0;" onclick="loadLeft()">&lt;</button>-->
+<button id="leftimage2" style="border-radius: 0 3px 3px 0;" onclick="loadLeftRendering()">&lt;&lt;</button>
+<!--<button id="rightimage" onclick="loadRight()" style="border-radius:3px 0 0 3px;">&gt;</button>-->
+<button id="rightimage2" onclick="loadRightRendering()" style="border-radius:3px 0 0 3px;">&gt;&gt;</button><button id="showIndexedChars" onClick="highlightIndexedChars()">Indexview</button><button id="fatcrossview" onclick="arrangeFatCross()">FC View</button><button onclick="showHideAnno()">Toggle</button><button id="saveInGit" onclick="commitData()">Save</button></span><span id="saveannotationsmessage" style="position:absolute;text-align:center;margin-top:40px;margin-right:80px;right:0px;"></span><br/></div>
+<div id="openseadragon" style="height: 580px;"></div>
+<!--<button id="topimage" style="cursor: pointer;left:250px;transition: 0.6s ease;position:absolute;top:25%;margin-top:0px;padding:16px;border-radius: 0 3px 3px 0;" onclick="loadTop()">^</button>-->
+
+<!--<button id="bottomimage" style="cursor: pointer;left:250px;position:absolute;bottom:25%;margin-bottom:-20px;padding:16px;border-radius: 0 3px 3px 0;" onclick="loadBottom()">v</button></div>-->
+<a id="metadata" onClick="getEXIFData('openseadragon','metadatafield')">
+<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path></svg>
+</a>
+<span id="period"></span><br/>CDLI: <span id="cdlilink"></span>&nbsp;Annotation Completeness: <span id="annocomplete"></span> Indexing Completeness: <span id="indexingcomplete"></span><br/>
+Approval Management:<details>
+<span><label for="positioningcorrect">Positioning correct: </label><select id="positioningcorrect"><option value="unknown">Unknown</option><option value="correct">Correct</option><option value="incorrect">Incorrect</option></select>
+<label for="transliterationcorrect">Transliteration correct: </label><select id="transliterationcorrect"><option value="unknown">Unknown</option><option value="correct">Correct</option><option value="incorrect">Incorrect</option></select>
+<label for="indexingcorrect">Indexing correct: </label><select id="indexingcorrect"><option value="unknown">Unknown</option><option value="correct">Correct</option><option value="incorrect">Incorrect</option></select>
+<label for="annotationscorrect">Annotations correct: </label><select id="annotationscorrect"><option value="unknown">Unknown</option><option value="correct">Correct</option><option value="incorrect">Incorrect</option></select>
+<label for="annotationscomplete">Annotations complete: </label><select id="annotationscomplete"><option value="unknown">Unknown</option><option value="complete">Complete</option><option value="incomplete">Incomplete</option></select><br/>
+<label for="comment">Custom Tag: </label><input id="comment" type="text"/><button id="addTag" onclick="addTag()">Add Tag</button>&nbsp;<button id="saveApprovals" onclick="saveApprovals()">Save Approvals</button><br>
+<p id="mytags"></p></span>
+</details>
+</div>
+<div id="metadatafield"></div>
+</div>
+<div class="col-md-6">
+  <div id="tabs">
+  <ul>
+    <li><a href="#tabs-3dmodel">3D Model</a></li>
+    <li><a href="#tabs-transliteration">Transliteration</a></li>
+    <li><a href="#tabs-translation">Translation</a></li>
+  </ul>
+  <div id="tabs-3dmodel">
+      3DModel:<br/>
+<select id="3dimages" onchange="setup3dhop()"></select>Data Format:<select id="dataformaturl" onchange="reload3DURLs()"><option value="ply_url">PLY</option><option value="nxz_url">NXZ</option></select>
+<button id="saveAnnotations3D" onclick="saveTextAsFile(JSON.stringify(annos3d),'json','anno3d')">Save 3D Annotations</button>
+<button id="saveInGit3D" onclick="commitData()">Save 3D Annotation in Gitlab</button>
+<button id="synch2D3DButton" onClick="sync2D3D()">Synchronize 3D and 2D View</button><br/>
+<span id="3dannoinformation"></span>
+<div id="3dhop" class="tdhop" style="height:700px;width:640px;" onmousedown="if (event.preventDefault) event.preventDefault()"><div id="tdhlg"></div>
+ <div id="toolbar">
+  <img id="home"        title="Home"                   src="skins/dark/home.png"/><br/>
+<!--ZOOM-->
+  <img id="zoomin"      title="Zoom In"                src="skins/dark/zoomin.png"/><br/>
+  <img id="zoomout"     title="Zoom Out"               src="skins/dark/zoomout.png"/><br/>
+<!--ZOOM-->
+<!--LIGHTING-->
+  <img id="lighting_off" title="Enable Lighting"       src="skins/dark/lighting_off.png" style="position:absolute; visibility:hidden;"/>
+  <img id="lighting"     title="Disable Lighting"      src="skins/dark/lighting.png"/><br/>
+<!--LIGHTING-->
+<!--LIGHT-->
+  <img id="light_on"    title="Disable Light Control"  src="skins/dark/lightcontrol_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="light"       title="Enable Light Control"   src="skins/dark/lightcontrol.png"/><br/>
+<!--LIGHT-->
+<!--MEASURE-->
+  <img id="measure_on"  title="Disable Measure Tool"   src="skins/dark/measure_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="measure"     title="Enable Measure Tool"    src="skins/dark/measure.png"/><br/>
+<!--MEASURE-->
+<!--POINT PICKING-->
+  <img id="pick_on"     title="Disable PickPoint Mode" src="skins/dark/pick_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="pick"        title="Enable PickPoint Mode"  src="skins/dark/pick.png"/><br/>
+<!--POINT PICKING-->
+<!--SECTIONS-->
+  <img id="sections_on" title="Disable Plane Sections" src="skins/dark/sections_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="sections"    title="Enable Plane Sections"  src="skins/dark/sections.png"/><br/>
+<!--SECTIONS-->
+<img id="hotspot_on" title="Hide Hotspots"         src="skins/dark/pin_on.png" 
+                                                          style="position:absolute; visibility:hidden;"/>
+  <img id="hotspot"    title="Show Hotspots"         src="skins/dark/pin.png"          /><br/>
+<!--COLOR-->
+  <img id="color_on"    title="Disable Solid Color"    src="skins/dark/color_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="color"       title="Enable Solid Color"     src="skins/dark/color.png"/><br/>
+<!--COLOR-->
+<!--CAMERA-->
+  <img id="perspective"  title="Perspective Camera"    src="skins/dark/perspective.png" style="position:absolute; visibility:hidden;"/>
+  <img id="orthographic" title="Orthographic Camera"   src="skins/dark/orthographic.png"/><br/>
+<!--CAMERA-->
+<!--SCREENSHOT-->
+  <img id="screenshot" title="Save Screenshot"   src="skins/dark/screenshot.png"/><br/>
+<!--SCREENSHOT-->
+<!--FULLSCREEN-->
+  <img id="full_on"     title="Exit Full Screen"       src="skins/dark/full_on.png" style="position:absolute; visibility:hidden;"/>
+  <img id="full"        title="Full Screen"            src="skins/dark/full.png"/>
+<!--FULLSCREEN-->
+ </div>
+
+ <div id="sections-box" class="output-box">
+  <table class="output-table" onmousedown="event.stopPropagation()">
+	<tr><td>Plane</td><td>Position</td><td>Flip</td></tr>
+	<tr>
+		<td><img   id="xplane_on"    title="Disable X Axis Section" src="skins/icons/sectionX_on.png" onclick="sectionxSwitch()" style="position:absolute; visibility:hidden; border:1px inset;"/>
+			<img   id="xplane"       title="Enable X Axis Section"  src="skins/icons/sectionX.png"  onclick="sectionxSwitch()"/><br/></td>
+		<td><input id="xplaneSlider" class="output-input"  type="range"    title="Move X Axis Section Position"/></td>
+		<td><input id="xplaneFlip"   class="output-input"  type="checkbox" title="Flip X Axis Section Direction"/></td></tr>
+	<tr>
+		<td><img   id="yplane_on"    title="Disable Y Axis Section" src="skins/icons/sectionY_on.png" onclick="sectionySwitch()" style="position:absolute; visibility:hidden; border:1px inset;"/>
+			<img   id="yplane"       title="Enable Y Axis Section"  src="skins/icons/sectionY.png"  onclick="sectionySwitch()"/><br/></td>
+		<td><input id="yplaneSlider" class="output-input"  type="range"    title="Move Y Axis Section Position"/></td>
+		<td><input id="yplaneFlip"   class="output-input"  type="checkbox" title="Flip Y Axis Section Direction"/></td></tr>
+	<tr>
+		<td><img   id="zplane_on"    title="Disable Z Axis Section" src="skins/icons/sectionZ_on.png" onclick="sectionzSwitch()" style="position:absolute; visibility:hidden; border:1px inset;"/>
+			<img   id="zplane"       title="Enable Z Axis Section"  src="skins/icons/sectionZ.png"  onclick="sectionzSwitch()"/><br/></td>
+		<td><input id="zplaneSlider" class="output-input"  type="range"    title="Move Y Axis Section Position"/></td>
+		<td><input id="zplaneFlip"   class="output-input"  type="checkbox" title="Flip Z Axis Section Direction"/></td></tr></table>
+  <table class="output-table" onmousedown="event.stopPropagation()" style="text-align:right;">
+	<tr>
+	 <td>Show planes<input id="showPlane" class="output-input" type="checkbox" title="Show Section Planes" style="bottom:-3px;"/></td>
+	 <td>Show edges<input  id="showBorder" class="output-input" type="checkbox" title="Show Section Edges" style="bottom:-3px;"/></td></tr></table>
+ </div>
+ <div class="info" id="infospot" style="display:none">
+		<button id = "x" onclick="hideInfo()">
+			x
+		</button>
+		<table class="infospot_panel" cellspacing="10">
+			<tbody>
+				<tr class="infospot_title" id="spot_title"><td colspan="2">Info-Spot</td></tr>
+				<tr class="infospot_text" id="spot_text"><td>Text.</td></tr>
+			</tbody>
+		</table>
+	</div>
+  <!--SECTIONS-->
+ <canvas id="draw-canvas" style="background-color:lightgray""/>
+  </div>
+
+  </div>
+  <div id="tabs-transliteration">
+    <br/><br/><br/><br/>
+<h3>Transliteration View <span id="textid"></span></h3>
+    <span id="transliterationdialogmessage"></span><br/>
+    <code id="transliterationtextarea" style="width: 300px; height: 550px; overflow: auto;">
+    </code><br/>
+    <button id="closedialog" onClick='toggleTransliterationEdit()'>Edit</button><button id="savetransliteration" onClick='saveTransliterationJSON()'>Save</button><button id="savetransliterationannotation" onClick='saveTransliterationAnnotationJSON()'>Save Transliteration Annotation</button>
+  </div>
+  <div id="tabs-translation">
+    <br/><br/><br/><br/>
+    <h3>Translation View <span id="textid"></span></h3>
+    <code id="translationtextarea" style="width: 300px; height: 550px; overflow: auto">
+    </code><br/>
+  </div>
+</div>
+<dialog id="transliterationdialog" class="modal-body" style="z-index: 0;height: 800px;min-width:900px; overflow: auto;">
+    <button id="closedialog" onClick='document.getElementById("transliterationdialog").close()'>Close</button>
+</dialog>
+<dialog id="translationdialog" class="modal-body" style="z-index: 1000 !important ; height: 550px; overflow: auto">
+
+    <button id="closedialog3" onClick='document.getElementById("translationdialog").close()'>Close</button>
+</dialog>
+<dialog id="paleocodedialog" class="modal-body" style="z-index: 1000 !important ; height: 550px; overflow: auto">
+    <h3>PaleoCodeList</h3>
+    <ul id="paleocodelist" style="width: 300px; height: 550px; overflow: auto">
+    </ul><br/>
+    <button id="closedialog2" onClick='document.getElementById("paleocodedialog").close()'>Close</button>
+</dialog>
+
+
+</div>
+<script type="text/javascript">
+function actionsToolbar(action) {
+	if(action=='home') presenter.resetTrackball();
+//--FULLSCREEN--
+	else if(action=='full'  || action=='full_on') fullscreenSwitch();
+//--FULLSCREEN--
+//--ZOOM--
+	else if(action=='zoomin') presenter.zoomIn();
+	else if(action=='zoomout') presenter.zoomOut();
+//--ZOOM--
+//--LIGHTING--
+	else if(action=='lighting' || action=='lighting_off') { presenter.enableSceneLighting(!presenter.isSceneLightingEnabled()); lightingSwitch(); }
+//--LIGHTING--
+//--LIGHT--
+	else if(action=='light' || action=='light_on') { presenter.enableLightTrackball(!presenter.isLightTrackballEnabled()); lightSwitch(); }
+//--LIGHT--
+//--CAMERA--
+	else if(action=='perspective' || action=='orthographic') { presenter.toggleCameraType(); cameraSwitch(); }
+//--CAMERA--
+//--COLOR--
+	else if(action=='color' || action=='color_on') { presenter.toggleInstanceSolidColor(HOP_ALL, true); colorSwitch(); }
+//--COLOR--
+//--MEASURE--
+	else if(action=='measure' || action=='measure_on') { presenter.enableMeasurementTool(!presenter.isMeasurementToolEnabled()); measureSwitch(); }
+//--MEASURE--
+//--POINT PICKING--
+	else if(action=='pick' || action=='pick_on') { presenter.enablePickpointMode(!presenter.isPickpointModeEnabled()); pickpointSwitch(); }
+  else if(action=='hotspot'|| action=='hotspot_on') { 
+    presenter.toggleSpotVisibility(HOP_ALL, true); presenter.enableOnHover(!presenter.isOnHoverEnabled()); 
+    hotspotSwitch(); }
+//--POINT PICKING--
+//--SCREENSHOT--
+	else if(action=='screenshot') presenter.saveScreenshot();
+//--SCREENSHOT--
+//--SECTIONS--
+	else if(action=='sections' || action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }
+//--SECTIONS--
+}
+
+var annos3d={};
+
+/*function onPickedSpot(id) {
+   console.log(id)
+   console.log(annos3d)
+   if(id in annos3d){
+    console.log(annos3d[id])
+    content=""
+    for(bod in annos3d[id]["body"]){
+      content+=annos3d[id]["body"][bod]["purpose"]+": "+annos3d[id]["body"][bod]["value"]+" "
+    }
+    console.log(content)
+    document.getElementById("3dannoinformation").innerHTML=content
+  }
+}
+*/
+
+function onPickedSpot(id) {
+	if (presenter._scene.spots[id]["animation"]) {
+		presenter.animateToTrackballPosition(presenter._scene.spots[id]["animation"]);
+	}
+
+	if (presenter._scene.spots[id]["title"]) {
+		document.getElementById("spot_title").innerHTML = presenter._scene.spots[id].title;
+	}
+
+	if (presenter._scene.spots[id]["info"]) {
+		document.getElementById("spot_text").innerHTML = presenter._scene.spots[id].info;
+	}
+
+	$("#infospot").css("display","block");
+}
+
+
+function onEnterSpot(id) {
+	if (presenter._scene.spots[id]["animation"]) {
+		presenter.animateToTrackballPosition(presenter._scene.spots[id]["animation"]);
+	}
+
+	if (presenter._scene.spots[id]["title"]) {
+		document.getElementById("spot_title").innerHTML = presenter._scene.spots[id].title;
+	}
+
+	if (presenter._scene.spots[id]["info"]) {
+		document.getElementById("spot_text").innerHTML = presenter._scene.spots[id].info;
+	}
+
+	$("#infospot").css("display","block");
+}
+
+/*function onEnterSpot(id) {
+  console.log(id)
+  console.log(annos3d)
+  if(id in annos3d){
+    console.log(annos3d[id])
+    content=""
+    for(bod in annos3d[id]["body"]){
+      content+=annos3d[id]["body"][bod]["purpose"]+": "+annos3d[id]["body"][bod]["value"]+" "
+    }
+    console.log(content)
+    document.getElementById("3dannoinformation").innerHTML=content
+  }
+}*/
+
+var pickedpoints=[]
+
+function onEndPickPoint(point) {
+    var x = point[0].toFixed(2);
+    var y = point[1].toFixed(2);
+    var z = point[2].toFixed(2);
+    pickedpoints.append([x,y,z])
+    console.log(pickedpoints)
+    //$('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
+}
+
+function onLeaveSpot(id) {
+  document.getElementById("3dannoinformation").innerHTML=""
+}
+
+function loadAllSpots(){
+  console.log("Load All Spots")
+  surfaces={"03_front":5.0,"06_back":-5.0,"02_left":0.0,"04_right":0.0,"01_top":0.0,"05_bottom":0.0}
+  spots={}
+  $.ajaxSetup({
+    async: false
+  });
+  for(surf in surfaces){
+    console.log("Loading.... "+gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+$("#3dimages").text()+"_"+surf+".png.json/raw?ref="+branch+"&access_token="+gitlabtoken)
+    $.getJSON(gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+$("#3dimages").text()+"_"+surf+".png.json/raw?ref="+branch+"&access_token="+gitlabtoken,
+      function(res){
+      console.log("Res: "+res)
+      if(surf.includes("back")){
+        spots=convert2DAnnoTo3D(res,spots,surfaces[surf],false)
+      }else{
+        spots=convert2DAnnoTo3D(res,spots,surfaces[surf],true)
+      }
+      
+    }).fail(function(jqXHR, textStatus, errorThrown) { console.log('getJSON request failed! ' + textStatus); });
+  }
+  $.ajaxSetup({
+    async: true
+  });
+  console.log("Found spots: ")
+  console.log(spots)
+  presenter = new Presenter("draw-canvas");
+  presenter._onPickedSpot = onPickedSpot;
+	presenter.setScene({
+		meshes: {
+			"mesh_1" : { url: $("#3dimages").val() },
+      "Cube": {url: "models/cube.ply"},
+      "Sphere": {url: "models/sphere.ply"}
+		},
+    spots: spots,
+		modelInstances : {
+			"model_1" : { 
+				mesh  : "mesh_1",
+				color : [0.8, 0.7, 0.75]
+			}
+		},
+		trackball: {
+			type : TurntablePanTrackball,
+			trackOptions : {
+				startPhi: 35.0,
+				startTheta: 15.0,
+				startDistance: 2.5,
+				minMaxPhi: [-180, 180],
+				minMaxTheta: [-30.0, 70.0],
+				minMaxDist: [0.5, 3.0]
+			}
+		}
+	});
+}
+
+function setup3dhop() {
+  if($("#3dimages").text() in models3D && !("bbox" in models3D[$("#3dimages").text()])){
+    	presenter = new Presenter("draw-canvas");
+  //console.log("load 3d model")
+	presenter.setScene({
+		meshes: {
+			"mesh_1" : { url: $("#3dimages").val() }
+		},
+		modelInstances : {
+			"model_1" : { 
+				mesh  : "mesh_1",
+				color : [0.8, 0.7, 0.75]
+			}
+		},
+		trackball: {
+			type : TurntablePanTrackball,
+			trackOptions : {
+				startPhi: 35.0,
+				startTheta: 15.0,
+				startDistance: 2.5,
+				minMaxPhi: [-180, 180],
+				minMaxTheta: [-30.0, 70.0],
+				minMaxDist: [0.5, 3.0]
+			}
+		}
+	});
+    setTimeout(
+    function() 
+    {
+    models3D[$("#3dimages").text()]["bbox"]=presenter._scene.meshes.mesh_1.renderable.boundingBox
+    commit3DBBOX()
+    }, 20000);
+
+    //
+  }
+  loadAllSpots()
+}
+
+$(document).ready(function(){
+	init3dhop();
+	 var interval, id, ismousedown;
+	 var button = 0;
+$('#toolbar2 img')
+        .mouseenter(function(e) {
+            id = $(this).attr('id');
+            if (!ismousedown) $(this).css("opacity", "0.8");
+            else $(this).css("opacity", "1.0");
+        })
+        .mouseout(function(e) {
+            clearInterval(interval);
+            $(this).css("opacity", "0.5");
+        })
+        .mousedown(function(e) {
+            id = $(this).attr('id');
+            ismousedown = true;
+            if (e.button == button) {
+                actionsToolbar(id);
+                if (id == "zoomin" || id == "zoomout") {
+                    interval = setInterval(function() {
+                        actionsToolbar(id);
+                    }, 100);
+                } else {
+                    clearInterval(interval);
+                }
+                $(this).css("opacity", "1.0");
+                button = 0;
+            }
+        })
+        .mouseup(function(e) {
+            ismousedown = false;
+            if (e.button == button) {
+                clearInterval(interval);
+                $(this).css("opacity", "0.8");
+                button = 0;
+            }
+        })
+        .on('touchstart', function(e) {
+            button = 2;
+        })
+        .on('touchend', function(e) {
+            button = 0;
+        });
+	setup3dhop();
+
+});
+</script>
+<!--</div>-->
+<canvas id="svgcanvas" width="300" height="100" style="visibility:hidden">
+</canvas>
+</div>
+<script>
+var threedimageindex=0
+reload3DURLs()
+</script>
+{% include footer.html %}
+  </body>
+
+</html>
