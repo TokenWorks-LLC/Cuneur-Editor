@@ -1,0 +1,1 @@
+This folder is where annotation files of the photos and renderings will be committed to.

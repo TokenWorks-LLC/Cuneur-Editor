@@ -1,0 +1,204 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Shuffle/6.0.0/shuffle.min.js"></script>
+<script src="js/data/newurls.js"></script>
+<script src="js/data/hs23D.js"></script>
+<script src="js/data/hs2CDLI.js"></script>
+<script src="js/data/transliterations.js"></script>
+<script src="js/data/periods.js"></script>
+<script src="js/data/languages.js"></script>
+<style>
+.flex {
+  display:flex;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+}
+.flex > DIV {
+  margin:2px;
+  padding:25px;
+  background:#ccc;
+  border:1px solid #bbb;
+  font-size:14pt;
+  color:#666;
+}
+ul {
+  margin:0;
+  text-align: center;
+}
+ul li {
+  list-style: none;
+}
+/*======================*/
+/* ul .shuffle-filter */
+.shuffle-filter {
+  margin: 0 auto;
+}
+.shuffle-filter li {
+  display: inline-block;
+  padding: 10px;
+  cursor: pointer;
+}
+.selected {
+  text-decoration: underline;
+}
+/*======================*/
+/* ul shuffle-container*/
+.shuffle-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background: #ddd;
+}
+.shuffle-container li span {
+  padding: 30px;
+  margin: 20px;
+  background: #eee;
+  display: inline-block;
+}
+
+.aspect {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  overflow: hidden;
+}
+
+.aspect__inner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* Add more aspect ratios here */
+.aspect--16x9 {
+  padding-bottom: 56.25%;
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+
+  <div class="wrapper">
+    <table width="100%"><tr><td width="13%">
+    <a href="index.html"><img src="cuneiform_annotator_logo_200px.png" alt="Cuneiform Annotator" width="75" height="75"/></a></td><td width="75%"><h1 align="center" style="valign:top">Cuneiform Annotator for the Hilprecht Collection</h1></td><td width="12%"></td></tr></table>
+  </div>
+
+</header>
+Search: <input id="tabletsearch" class="js-shuffle-search" type="text" onkeyup="handleSearchKeyup()"/><br/>
+<div class="row">
+  <ul class="shuffle-filter" id="shuffle-categories">
+  <li class="selected" style=\"border:2px solid black\" data-target="all">All</li>
+  </ul>
+  <ul id="tabcontent" class="shuffle-container">
+</ul>
+</body>
+<script>
+var shuffleInstance;
+function handleSearchKeyup(evt) {
+    const searchText = $('#tabletsearch').val().toLowerCase();
+
+    shuffleInstance.filter((element, shuffle) => {
+      // If there is a current filter applied, ignore elements that don't match it.
+      if (shuffle.group !== Shuffle.ALL_ITEMS) {
+        // Get the item's groups.
+        const groups = JSON.parse(element.dataset.groups);
+        const isElementInCurrentGroup = groups.indexOf(shuffle.group) !== -1;
+
+        // Only search elements in the current group
+        if (!isElementInCurrentGroup) {
+          return false;
+        }
+      }
+
+      const titleElement = element.querySelector('.picture-item__title');
+      const titleText = titleElement.textContent.toLowerCase().trim();
+
+      return titleText.indexOf(searchText) !== -1;
+    });
+  }
+tablecontent=""
+var periodss=Array.from(new Set(Object.values(periods)))
+genress=periodss
+console.log(genress)
+for(url in urls){
+    tablecontent+="<li data-groups='["
+    var added=false
+    if(url in periods){
+      tablecontent+="\""+periods[url]+"\", "
+      added=true
+    }
+    if(url in languages){
+      if("genre" in languages[url]){
+        tablecontent+="\""+languages[url]["genre"]+"\", "
+        added=true
+      }
+      if("language" in languages[url]){
+        tablecontent+="\""+languages[url]["language"]+"\", "
+        added=true
+      }
+      if("material" in languages[url]){
+        tablecontent+="\""+languages[url]["material"]+"\", "
+        added=true
+      }
+    }
+    if(added){
+        tablecontent=tablecontent.substring(0,tablecontent.length-2)
+    }
+    tablecontent+="]' style=\"width:25%;background-color:white;border-radius:25px;\"><figure class=\"col-4@sm picture-item\" data-title=\""+url+"\"><div class=\"aspect aspect--16x9\"><div class=\"aspect__inner\"><a target=\"_blank\" href=\"annotator.html?tabletid="+url+"\">"
+    for(vari in urls[url]["variants"]){
+        if(urls[url]["variants"][vari]["label"].includes("front")){
+            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='placeholder.png'\" src=\""+urls[url]["variants"][vari]["url"].replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url+"\"/>"
+        }
+    }
+    tablecontent+="</a>"
+    tablecontent+="</div></div><figcaption style=\"color:black\" class=\"picture-item__title\"><a target=\"_blank\" href=\"annotator.html?tabletid="+url+"\" style=\"font-weight:bold;color:black\">"+url+"</a>"
+    if(url in hs2CDLI){
+      tablecontent+=" (<a href=\"https://cdli.ucla.edu/search/search_results.php?SearchMode=Text&ObjectID="+hs2CDLI[url]+"\">"+hs2CDLI[url]+"</a>) "
+    }
+    if(url in transliterations){
+      tablecontent+=" <b>(T)</b>"
+    }
+    tablecontent+="<br/>"
+    if(url in languages){
+      if("genre" in languages[url]){
+        tablecontent+="<b>"+languages[url]["genre"]+"</b><br/>"
+      }
+    }
+    if(url in periods){
+      tablecontent+="<b>"+periods[url]+"</b> "
+    }
+    tablecontent+="<br/></figcaption></figure></li>"
+}
+$('#tabcontent').html(tablecontent)
+window.onload = function () {
+categories="<li class=\"selected\" data-target=\"all\">All</li>"
+console.log(genress)
+for(genre of genress){
+   if(genre!=""){
+      categories+="<li style=\"border:2px solid black\" data-target=\""+genre+"\">"+genre+"</li>"
+   }   
+}
+$('#shuffle-categories').html(categories)
+var Shuffle = window.Shuffle;
+var element = document.querySelector('.shuffle-container');
+shuffleInstance = new Shuffle(element, {
+  itemSelector: 'li'
+}); 
+  $('.shuffle-filter li').on('click',function(e){
+    $('#tabletsearch').val("")
+    e.preventDefault();
+    $('.shuffle-filter li').removeClass('selected');
+    $(this).addClass('selected'); 
+    var keyword = $(this).attr('data-target');
+    console.log(keyword)
+    shuffleInstance.filter(keyword);
+  });
+
+
+}
+</script>
+</html>
