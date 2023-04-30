@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+<script src="js/data/homepagestats.js"></script>
+<h1 align="center">MaiCuBeDa Statistics</h1>
+<div style="width:100%">
+<div id="wrapper" style="width:50%;height:20%">
+  <canvas id="chart"></canvas>
+</div>
+<div id="wrapper2" style="width:50%;height:20%">
+  <canvas id="genrechart"></canvas>
+</div>
+</div>
+<div style="width:100%">
+<div id="wrapper3" style="width:50%;height:20%">
+  <canvas id="languagechart"></canvas>
+</div>
+<div id="wrapper5" style="width:50%;height:20%">
+	<canvas id="periodchart"></canvas>
+</div>
+</div>
+<div id="wrapper6" style="width:100%;height:20%">
+  <canvas id="charclasseschart"></canvas>
+</div>
+<div id="wrapper2" style="width:100%;height:20%">
+  <canvas id="acctranslitstatchart"></canvas>
+</div>
+<div id="wrapper4" style="width:100%;height:20%">
+  <canvas id="translitstatchart"></canvas>
+</div>
+<script>
+function makeChart(players,target,title,axistitle) {
+  console.log(players)
+  var charLabels = Object.keys(players)
+  var periodsData = Object.values(players)
+
+  var chart = new Chart(target, {
+    type: "bar",
+    options: {
+      maintainAspectRatio: true,
+	  scales: {
+		yAxes: [{
+		scaleLabel: {
+        display: true,
+        labelString: axistitle
+		}
+		}]
+	  },
+      legend: {
+        display: false
+      },
+	  plugins: {
+            title: {
+                display: true,
+                text: title
+            }
+        }
+    },
+    data: {
+      labels: charLabels,
+      datasets: [
+        {
+		  borderColor: "#FF5733",
+		  backgroundColor: "#FF5733",
+          data: periodsData
+        }
+      ]
+    }
+  });
+}
+makeChart(acc_charperperiod,"chart","Occurance of characters in time periods","Amount of time periods in which characters occur")
+makeChart(genres,"genrechart","Genres","Amount of characters per genre")
+makeChart(numberLanguages,"languagechart","Languages","Amount of characters per language covered")
+makeChart(numberCharPeriods,"periodchart","Number of character per time period","Number of character per time period")
+makeChart(acc_translitstats,"acctranslitstatchart","Annotation Completeness","Number of tranliterations of the given annotation completeness")
+makeChart(translitstats,"translitstatchart","Annotation Completeness","Number of tranliterations of the given annotation completeness")
+makeChart(charclasses,"charclasseschart","Character Classes","Character Classes")
+</script>
+</body>
+</html>
