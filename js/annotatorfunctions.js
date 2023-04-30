@@ -1058,7 +1058,7 @@ function loadVariants() {
         $('#textid').html("" + $('#images option:selected').val() + "")
         $('#transliterationtextarea').html("No transliteration available for text " + $('#images option:selected').val())
     }
-    sources=urls[$('#images option:selected').val()]["variants"]
+    sources=renderingurls[$('#images option:selected').val()]["variants"]
     tsources=[]
     annolist={}
     jQuery.ajaxSetup({async:false});
@@ -1124,7 +1124,7 @@ function loadVariants() {
     jQuery.ajaxSetup({async:true});
     console.log(annolist)
     imgside = ""
-    for (obj of urls[$('#images option:selected').val()]["variants"]) {
+    for (obj of renderingurls[$('#images option:selected').val()]["variants"]) {
         /*if (obj["label"].includes("front")) {
             imgside += "<option value=\"" + obj["url"] + "\" selected=\"selected\">" + obj["label"] + "</option>"
         } else {*/
