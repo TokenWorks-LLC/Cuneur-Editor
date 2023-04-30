@@ -528,17 +528,17 @@ function convert2DAnnoTo3D(res,spots,zvalue,yshift){
       curspot["transform"]["matrix"]=SglMat4.mul(SglMat4.translation([-9.087315,24.171282,zvalue]), SglMat4.scaling([0.1, 0.1, 0.07]))
     }else if(dims!=[]){
       console.log("DIMS: "+dims)
-      xcoordre=rescale(bbox[0],0,dims["x"],hs23D[$("#3dimages").text()]["bbox"]["min"][0],hs23D[$("#3dimages").text()]["bbox"]["max"][0])
-      ycoordre=rescale(bbox[1],0,dims["y"],hs23D[$("#3dimages").text()]["bbox"]["min"][1],hs23D[$("#3dimages").text()]["bbox"]["max"][1])
-      xcoordex=rescale(bbox[2],0,dims["x"],hs23D[$("#3dimages").text()]["bbox"]["min"][0],hs23D[$("#3dimages").text()]["bbox"]["max"][0])
-      ycoordex=rescale(bbox[3],0,dims["y"],hs23D[$("#3dimages").text()]["bbox"]["min"][1],hs23D[$("#3dimages").text()]["bbox"]["max"][1])
-      xlength=hs23D[$("#3dimages").text()]["bbox"]["max"][0]-hs23D[$("#3dimages").text()]["bbox"]["min"][0]
-      ylength=hs23D[$("#3dimages").text()]["bbox"]["max"][1]-hs23D[$("#3dimages").text()]["bbox"]["min"][1]
-      zlength=hs23D[$("#3dimages").text()]["bbox"]["max"][2]-hs23D[$("#3dimages").text()]["bbox"]["min"][2]
+      xcoordre=rescale(bbox[0],0,dims["x"],models3D[$("#3dimages").text()]["bbox"]["min"][0],models3D[$("#3dimages").text()]["bbox"]["max"][0])
+      ycoordre=rescale(bbox[1],0,dims["y"],models3D[$("#3dimages").text()]["bbox"]["min"][1],models3D[$("#3dimages").text()]["bbox"]["max"][1])
+      xcoordex=rescale(bbox[2],0,dims["x"],models3D[$("#3dimages").text()]["bbox"]["min"][0],models3D[$("#3dimages").text()]["bbox"]["max"][0])
+      ycoordex=rescale(bbox[3],0,dims["y"],models3D[$("#3dimages").text()]["bbox"]["min"][1],models3D[$("#3dimages").text()]["bbox"]["max"][1])
+      xlength=models3D[$("#3dimages").text()]["bbox"]["max"][0]-models3D[$("#3dimages").text()]["bbox"]["min"][0]
+      ylength=models3D[$("#3dimages").text()]["bbox"]["max"][1]-models3D[$("#3dimages").text()]["bbox"]["min"][1]
+      zlength=models3D[$("#3dimages").text()]["bbox"]["max"][2]-models3D[$("#3dimages").text()]["bbox"]["min"][2]
       if(zvalue>0){
-        zvalue=hs23D[$("#3dimages").text()]["bbox"]["max"][2]-2
+        zvalue=models3D[$("#3dimages").text()]["bbox"]["max"][2]-2
       }else if(zvalue<0){
-        zvalue=hs23D[$("#3dimages").text()]["bbox"]["min"][2]+2
+        zvalue=models3D[$("#3dimages").text()]["bbox"]["min"][2]+2
       }
       annos3d[ann]["target"]["source"]=$("#3dimages").val()
       annos3d[ann]["target"]["selector"]["type"]="WKTSelector"
@@ -568,18 +568,18 @@ function convert2DAnnoTo3D(res,spots,zvalue,yshift){
       else
         curspot["transform"]["matrix"]=SglMat4.mul(SglMat4.translation([(xcoordre+xlengthanno/2),(ycoordre+ylengthanno/2),zvalue]),SglMat4.scaling([xlengthscale, ylengthscale, 0.07]))
       console.log("Curspot: "+JSON.stringify(curspot))
-    }else if("bbox" in hs23D[$("#3dimages").text()]){
+    }else if("bbox" in models3D[$("#3dimages").text()]){
       xcoord=bbox[0]/25
       ycoord=bbox[1]/25
       zcoord=bbox[2]/25       
-      xlength=hs23D[$("#3dimages").text()]["bbox"]["max"][0]-hs23D[$("#3dimages").text()]["bbox"]["min"][0]
-      ylength=hs23D[$("#3dimages").text()]["bbox"]["max"][1]-hs23D[$("#3dimages").text()]["bbox"]["min"][1]
-      zlength=hs23D[$("#3dimages").text()]["bbox"]["max"][2]-hs23D[$("#3dimages").text()]["bbox"]["min"][2]
+      xlength=models3D[$("#3dimages").text()]["bbox"]["max"][0]-models3D[$("#3dimages").text()]["bbox"]["min"][0]
+      ylength=models3D[$("#3dimages").text()]["bbox"]["max"][1]-models3D[$("#3dimages").text()]["bbox"]["min"][1]
+      zlength=models3D[$("#3dimages").text()]["bbox"]["max"][2]-models3D[$("#3dimages").text()]["bbox"]["min"][2]
       if(xcoord>=(xlength/2)){
         xcoord-=(xlength/2)
         xcoord+=4
       }else{
-        xcoord=hs23D[$("#3dimages").text()]["bbox"]["min"][0]+xcoord
+        xcoord=models3D[$("#3dimages").text()]["bbox"]["min"][0]+xcoord
         xcoord+=4
       }
       ydiff=ylength-ycoord
