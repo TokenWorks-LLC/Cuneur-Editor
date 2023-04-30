@@ -122,8 +122,8 @@ Transliterations are stored in the file js/data/transliterations.js in a JSON ob
 
 `
 var transliterations={
-    "HS_1001": "@tablet...",
-    ...
+  "HS_1001": "@tablet...",
+  ...
 }
 `
 
@@ -131,7 +131,20 @@ The key of the JSON object contains the cuneiform tablet ID and the value of the
 
 ## Integration of 3D Models
 
+3D models of cuneiform tablets in the formats PLY or NXZ can be integrated into Cuneur by adding URLs to these resources in the file 3dmodels.js.
 
+`
+var models3D={
+  "HS_1004": {
+    "ply_url":"https://heidicon.ub.uni-heidelberg.de/eas/partitions/1/0/575000/575702/e3e95552fd0da2aea583c919e60a3b6876f01950/application/x-ply/HS_1004_HeiCuBeDa_GigaMesh.ply",
+    "nxz_url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/3/0/629000/629331/6c0742abaac324b82a12392f17c80cf65b6698e8/application/x-nexus-nxz/HS_1004_HeiCuBeDa_GigaMesh.nxz"
+  }
+,
+...
+}
+`
+
+The format expects the cuneiform tablet ID and up to one URL per format using the JSON keys specified above.
 
 
 
