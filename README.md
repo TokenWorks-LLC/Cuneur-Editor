@@ -151,9 +151,22 @@ var models3D={
 
 The format expects the cuneiform tablet ID and up to one URL per format using the JSON keys specified above.
 
+## Setting Up Your Cuneur Instance
 
+To setup your instance of Cuneur, simply fork this repository.
 
+Once you have forked Cuneur, you will need to configure your Cuneur instances as follows:
 
+1. Create an Access Token for your GitLab project under Settings->Access Tokens. If people should be able to edit in your Cuneur Instance, the Access Token needs to allow for
+  - API Rights
+  - Reading the repository
+  - Writing to the repository
+2. Add the Access Token to the file js/conf/annotatorconf.js
+3. Configure your Cuneur instance further using parameters in _config.yml 
 
+### Staying up-to-date
+Cuneur will receive regular updates in the future, including new features which you might want to use in your fork.
+
+To make use of any updates to Cuneur, you are free to sync any updates from this template repository, as they occur.
 
 
