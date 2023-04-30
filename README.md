@@ -34,5 +34,76 @@ While it is possible to host images in the Gitlab repository that Cuneur provide
 
 Once images have been selected and hosted for the annotation with Cuneur, the images have to be linked in the Cuneur application. 
 
+To do that they have to be added to the file js/data/imageurls.js
+
+`var urls={
+"HS_0044": {
+    "label": "HS_0044",
+    "variants": [
+      {
+        "label": "HS_0044_01_top.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107976:570673/full/full/0/default.png"
+      },
+      {
+        "label": "HS_0044_02_left.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107977:570674/full/full/0/default.png"
+      },
+      {
+        "label": "HS_0044_04_right.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107978:570675/full/full/0/default.png"
+      },
+      {
+        "label": "HS_0044_05_bottom.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107979:570676/full/full/0/default.png"
+      },
+      {
+        "label": "HS_0044_06_back.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107980:570677/full/full/0/default.png"
+      },
+      {
+        "label": "HS_0044_03_front.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1108249:570905/full/full/0/default.png"
+      }
+    ]
+  }
+...
+}
+`
+
 ## Transliteration preparation
+
+Currently, the Cuneur application supports transliterations in the CDLI-ATF format.
+
+The [CDLI-ATF format](http://oracc.museum.upenn.edu/doc/help/editinginatf/cdliatf/index.html) describes the different surfaces of the cuneiform tablet.
+
+Cuneur indexes CDLI-ATF formatted texts automatically and assigns each token in this text a local identifier.
+
+Consider the following example of the text P123456 of the CDLI:
+
+`
+
+@tablet
+
+@obverse
+
+1. 1(disz) sila4 niga
+2. ensi2 nibru{ki}
+3. 1(disz) sila4 ur-{d}en-lil2-la2
+4. 1(disz) amar masz-da3 ur-{d}utu
+5. 1(disz) sila4 1(disz) amar masz-da3
+6. szu-ru-usz-ki-in
+7. 2(disz) amar masz-da3
+
+@reverse
+1. e2-a-i3-li2
+  blank space
+2. mu-kux(DU)
+3. iti masz-da3-gu7
+4. mu si-mu-ru-um{ki} u3 lu-lu-bu{ki} a-ra2 1(u) la2 1(disz@t)-kam-ma-asz ba-hul
+
+@left
+1. u4 2(u) 6(disz)-kam
+`
+
+Cuneur will assign the ID "front_1_1" to the word 1(disz) in line 1 on the obverse side of this cuneiform tablet. The next word "sila4" will get id "front_1_2" and so on.
 
