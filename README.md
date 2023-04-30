@@ -70,6 +70,14 @@ To do that they have to be added to the file js/data/imageurls.js
 }
 `
 
+Images may be named in any way at the URL they are hosted, but need to apply to specific naming conventions in the label attribute of the Cuneur file.
+The naming convention is TABLETID_SURFACE.EXT, as shown in the example above.
+Only in this way, Cuneur can assign the correct surface of the cuneiform tablet to a rendering.
+
+## Integration of photos
+
+
+
 ## Transliteration preparation
 
 Currently, the Cuneur application supports transliterations in the CDLI-ATF format.
