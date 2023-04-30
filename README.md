@@ -32,46 +32,46 @@ While it is possible to host images in the Gitlab repository that Cuneur provide
 
 ### Integration of hosted rendering images into Cuneur
 
-Once images have been selected and hosted for the annotation with Cuneur, the images have to be linked in the Cuneur application. 
+Once rendering images have been selected and hosted for the annotation with Cuneur, the rednering images have to be linked in the Cuneur application. 
 
 To do that they have to be added to the file js/data/renderings.js
 
 `
-var urls={
-"HS_0044": {
-  "label": "HS_0044",
+var renderingurls={
+"HS_1004": {
+  "label": "HS_1004",
   "variants": [
       {
-        "label": "HS_0044_01_top.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107976:570673/full/full/0/default.png"
+        "label": "HS_1004_01_top.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111549:575703/full/full/0/default.png"
       },
       {
-        "label": "HS_0044_02_left.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107977:570674/full/full/0/default.png"
+        "label": "HS_1004_02_left.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111550:575704/full/full/0/default.png"
       },
       {
-        "label": "HS_0044_04_right.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107978:570675/full/full/0/default.png"
+        "label": "HS_1004_03_front.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111551:575705/full/full/0/default.png"
       },
       {
-        "label": "HS_0044_05_bottom.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107979:570676/full/full/0/default.png"
+        "label": "HS_1004_04_right.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111552:575706/full/full/0/default.png"
       },
       {
-        "label": "HS_0044_06_back.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107980:570677/full/full/0/default.png"
+        "label": "HS_1004_05_bottom.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111553:575707/full/full/0/default.png"
       },
       {
-        "label": "HS_0044_03_front.png",
-        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1108249:570905/full/full/0/default.png"
+        "label": "HS_1004_06_back.png",
+        "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1111554:575708/full/full/0/default.png"
       }
     ]
-  }
+  } 
 ...
 }
 `
 
-Images may be named in any way at the URL they are hosted, but need to apply to specific naming conventions in the label attribute of the Cuneur file.
+Rendering images may be named in any way at the URL they are hosted, but need to apply to specific naming conventions in the label attribute of the Cuneur file.
 The naming convention is TABLETID_SURFACE.EXT, as shown in the example above.
 Only in this way, Cuneur can assign the correct surface of the cuneiform tablet to a rendering.
 
@@ -79,7 +79,6 @@ Only in this way, Cuneur can assign the correct surface of the cuneiform tablet 
 
 The integration of photos follows the same pattern as the integration of renderings.
 However, photos are saved in the file js/data/images.js
-
 
 
 ## Transliteration preparation
