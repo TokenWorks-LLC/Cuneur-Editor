@@ -151,7 +151,7 @@ for(url in renderingurls){
     tablecontent+="]' style=\"width:25%;background-color:white;border-radius:25px;\"><figure class=\"col-4@sm picture-item\" data-title=\""+url+"\"><div class=\"aspect aspect--16x9\"><div class=\"aspect__inner\"><a target=\"_blank\" href=\"annotator.html?tabletid="+url+"\">"
     for(vari in renderingurls[url]["variants"]){
         if(renderingurls[url]["variants"][vari]["label"].includes("front")){
-            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='placeholder.png'\" src=\""+renderingurls[url]["variants"][vari]["url"].replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url+"\"/>"
+            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='{{site.baseurl}}/assets/images/placeholder.png'\" src=\""+renderingurls[url]["variants"][vari]["url"].replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url+"\"/>"
         }
     }
     tablecontent+="</a>"
