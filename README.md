@@ -103,7 +103,27 @@ Consider the following example of the text P123456 of the CDLI:
 
 @left
 1. u4 2(u) 6(disz)-kam
+
 `
 
-Cuneur will assign the ID "front_1_1" to the word 1(disz) in line 1 on the obverse side of this cuneiform tablet. The next word "sila4" will get id "front_1_2" and so on.
+Cuneur will assign the ID "front_1_1" to the word 1(disz) in line 1 on the obverse side of this cuneiform tablet.
+
+The next word "sila4" will get the id "front_1_2" and so on.
+
+### Storing transliterations
+
+Transliterations are stored in the file js/data/transliterations.js in a JSON object.
+
+`
+var transliterations={
+    "HS_1001": "@tablet...",
+    ...
+}
+`
+
+The key of the JSON object contains the cuneiform tablet ID and the value of the JSON object contains the transliteration in the CDLI-ATF format.
+
+
+
+
 
