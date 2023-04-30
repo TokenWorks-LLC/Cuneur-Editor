@@ -30,16 +30,17 @@ While it is possible to host images in the Gitlab repository that Cuneur provide
 2. The performance of loading images using the Gitlab.com API from a single repository is usually less optimal as compared to an external hosting service specialized for these purposes
 3. Specialized images services like IIIF allow for more options in exporting annotations. IIIF for example allows the citation and export of IIIF annotations using IIIF links which describe the annotation itself
 
-### Integration of hosted images into Cuneur
+### Integration of hosted rendering images into Cuneur
 
 Once images have been selected and hosted for the annotation with Cuneur, the images have to be linked in the Cuneur application. 
 
-To do that they have to be added to the file js/data/imageurls.js
+To do that they have to be added to the file js/data/renderings.js
 
-`var urls={
+`
+var urls={
 "HS_0044": {
-    "label": "HS_0044",
-    "variants": [
+  "label": "HS_0044",
+  "variants": [
       {
         "label": "HS_0044_01_top.png",
         "url": "https://heidicon.ub.uni-heidelberg.de/iiif/2/1107976:570673/full/full/0/default.png"
@@ -75,6 +76,11 @@ The naming convention is TABLETID_SURFACE.EXT, as shown in the example above.
 Only in this way, Cuneur can assign the correct surface of the cuneiform tablet to a rendering.
 
 ## Integration of photos
+
+The integration of photos follows the same pattern as the integration of renderings.
+However, photos are saved in the file js/data/images.js
+
+
 
 ## Transliteration preparation
 
