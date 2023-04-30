@@ -76,8 +76,6 @@ Only in this way, Cuneur can assign the correct surface of the cuneiform tablet 
 
 ## Integration of photos
 
-
-
 ## Transliteration preparation
 
 Currently, the Cuneur application supports transliterations in the CDLI-ATF format.
@@ -130,6 +128,12 @@ var transliterations={
 `
 
 The key of the JSON object contains the cuneiform tablet ID and the value of the JSON object contains the transliteration in the CDLI-ATF format.
+
+## Integration of 3D Models
+
+
+
+
 
 
 

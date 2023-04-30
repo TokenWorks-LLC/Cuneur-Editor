@@ -1,0 +1,61 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
+    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+    <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link type="text/css" rel="stylesheet" href="stylesheet/3dhop.css"/>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@recogito/recogito-js@1.7.1/dist/recogito.min.css"/>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon/dist/annotorious.min.css"></link>
+  <!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/3.0.0/openseadragon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+  <script src="https://hongru.github.io/proj/canvas2image/canvas2image.js"></script>
+  <script src="https://unpkg.com/geometric@2.2.0/build/geometric.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+  <script type="text/javascript" src="js/lib/canvasoverlay.js"></script>
+  <script type="text/javascript" src="js/data/newurls.js"></script>
+  <script type="text/javascript" src="js/lib/exif.js"></script>
+  <script type="text/javascript" src="js/lib/canvas2svg.js"></script>
+  <script type="text/javascript" src="js/lib/paleocodage.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@2.7.4/dist/openseadragon-annotorious.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-selector-pack@latest/dist/annotorious-selector-pack.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-toolbar@latest/dist/annotorious-toolbar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-better-polygon@latest/dist/annotorious-better-polygon.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@recogito/recogito-js@1.7.1/dist/recogito.min.js"></script>
+  <!--SPIDERGL-->
+  <script type="text/javascript" src="js/lib/spidergl.js"></script>
+  <!--JQUERY-->
+  <script type="text/javascript" src="js/lib/jquery.js"></script>
+  <!--<script type="text/javascript" src="js/paleocodes.js"></script>-->
+  <!--PRESENTER-->
+  <script type="text/javascript" src="js/lib/presenter.js"></script>
+  <!--<script type="text/javascript" src="js/lib/presenter_added.js"></script>
+  <script type="text/javascript" src="js/lib/presenter_extended.js"></script>-->
+  <!--3D MODELS LOADING AND RENDERING-->
+  <script type="text/javascript" src="js/lib/nexus.js"></script>
+  <script type="text/javascript" src="js/lib/ply.js"></script>
+  <!--TRACKBALLS-->
+  <script type="text/javascript" src="js/lib/trackball_turntable.js"></script>
+  <script type="text/javascript" src="js/lib/trackball_turntable_pan.js"></script>
+  <script type="text/javascript" src="js/lib/trackball_pantilt.js"></script>
+  <script type="text/javascript" src="js/lib/trackball_sphere.js"></script>
+  <!--UTILITY-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script type="text/javascript" src="js/lib/init.js"></script>
+  <!--<script type="text/javascript" src="js/lib/init_added.js"></script>-->
+  <script type="text/javascript" src="js/3dhopanno.js"></script>
+  <script src="js/lib/saveTextAsFile.js"></script>
+  </head>
+  
