@@ -170,5 +170,3 @@ Once you have forked Cuneur, you will need to configure your Cuneur instances as
 Cuneur will receive regular updates in the future, including new features which you might want to use in your fork.
 
 To make use of any updates to Cuneur, you are free to sync any updates from this template repository, as they occur.
-
-
