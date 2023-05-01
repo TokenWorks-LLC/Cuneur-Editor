@@ -1,4 +1,4 @@
 ---
-layout: index.html
-permalink: /
+layout: indexlayout.html
+permalink: /index.html
 ---
