@@ -11,3 +11,8 @@ permalink: /:categories/:year/:month/:day/:title
 # Build settings
 markdown: kramdown
 exclude: ["README.md", "renderings", "normalized_signs", "result"]
+
+collections:
+  pages:
+    output: true
+    permalink: /:path/
