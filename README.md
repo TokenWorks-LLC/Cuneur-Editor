@@ -4,6 +4,8 @@ This repository is a template repository for the usage of the Cuneur - Cuneiform
 
 This README aims to guide the user to get started with annotating a new set of images of cuneiform tablet contents.
 
+Please also consult the [Wiki](https://gitlab.com/fcgl/cuneur-template/-/wikis/home) for more detailed information.
+
 ## Image preparation
 
 Cuneur expects a set of images to represent cuneiform tablet contents to be accessible.
