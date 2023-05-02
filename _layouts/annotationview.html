@@ -1,0 +1,57 @@
+<html>
+<head>
+<script src="js/paleocodes.js"></script>
+<script src="js/paleocodesSign.js"></script>
+<script src="js/lib/saveTextAsFile.js"></script>
+<title>Overview Signs</title>
+</head>
+<body>
+<h1>Annotation results</h1>
+Signreadings: <select id="signreadings" onchange="loadImages('signreadings')"></select><button id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemap[document.getElementById('signreadings').value]),'json','selectedreadingimages')">Save Selected Reading Image URLs</button><a href="js/paleocodes.js">Download all sign reading image URLs</a><br/>
+SignNames: <select id="signNames" onchange="loadImages('signNames')"></select><button onclick="" id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemapSigns[document.getElementById('signNames').value]),'json','selectedSignImages')">Save Selected Sign Image URLs</button><a href="js/paleocodesSign.js">Download all sign name images</a>
+<table id="readingimages" style="overflow-y:auto; height: 80%;">
+
+</table>
+<script>
+selitems=""
+imagespersign=12
+for(imgname in paleocodemap){
+    selitems+="<option value=\""+imgname+"\">"+imgname+" ["+paleocodemap[imgname]["images"].length/imagespersign+"]</option>"
+}
+document.getElementById("signreadings").innerHTML=selitems
+selitems2=""
+for(imgname in paleocodemapSigns){
+    selitems2+="<option value=\""+imgname+"\">"+imgname+" ["+paleocodemapSigns[imgname]["images"].length/imagespersign+"]</option>"
+}
+document.getElementById("signNames").innerHTML=selitems2
+function loadImages(id){
+    imgname=document.getElementById(id).value
+    tabcontent=""
+    if(id=="signreadings"){
+        themap=paleocodemap
+    }else{
+        themap=paleocodemapSigns
+    }
+    if(imgname in themap && "images" in themap[imgname]){
+        tabcontent="<tr>"
+        var rowcounter=0
+        var start=true
+        for(iiifpath in themap[imgname]["images"]){
+            if(start){
+                tabcontent+="<td>"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</td><td>"
+                start=false
+            }
+            if(rowcounter>imagespersign-1){
+                rowcounter=0
+                tabcontent+="</td></tr><tr><td>"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</td><td>"
+            }
+            tabcontent+="<img style='border:2px solid #FFFFFF' src=\""+themap[imgname]["images"][iiifpath]["url"]+"\" loading=\"lazy\"/>"
+            rowcounter+=1
+        }
+        tabcontent+="</td></tr>"
+    }
+    document.getElementById('readingimages').innerHTML=tabcontent
+}    
+</script>
+</body>
+</html>
