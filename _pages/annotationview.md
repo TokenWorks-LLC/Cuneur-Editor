@@ -1,4 +1,4 @@
 ---
-layout: annotationview.html
+layout: annotationview
 title: Annotations
 ---
