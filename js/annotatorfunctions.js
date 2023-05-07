@@ -196,8 +196,8 @@ var TextMapWidget = function(args) {
       console.log("Fieldsetchanged")
       document.getElementById('osdannotable').innerHTML=""
       console.log(osdargs)
-      console.log(mappings)
-      recreateAnnoTable(osdargs,document.getElementById('osdannotable'),document.querySelector('input[name="group-annotype"]:checked').value,mappings)
+      console.log(imagemappings[curimagemapping])
+      recreateAnnoTable(osdargs,document.getElementById('osdannotable'),document.querySelector('input[name="group-annotype"]:checked').value,imagemappings[curimagemapping])
   });
   annotypespan.appendChild(fieldset)
   container.appendChild(annotypespan)
@@ -207,8 +207,8 @@ var TextMapWidget = function(args) {
     div.width="100%"
     container.appendChild(div)
   console.log("THE MAPPINGS")
-  console.log(mappings)
-  recreateAnnoTable(args,div,"sign",mappings)
+  console.log(imagemappings[curimagemapping])
+  recreateAnnoTable(args,div,"sign",imagemappings[curimagemapping])
   return container;
 }
 
@@ -268,46 +268,46 @@ var TextMapWidget2 = function(args) {
     input.style="color:black;background-color:white"
   }
 
-	console.log(recogitomappings[key])
-  if(!readOnlyVar && "inputtype" in recogitomappings[key] && recogitomappings[key]["inputtype"]=="select"){
+	console.log(textmappings[curtextmapping][key])
+  if(!readOnlyVar && "inputtype" in textmappings[curtextmapping][key] && textmappings[curtextmapping][key]["inputtype"]=="select"){
     input = document.createElement('select');
     input.addEventListener('change',addTag)
-    if(!readOnlyVar && "data" in recogitomappings[key]){
+    if(!readOnlyVar && "data" in textmappings[curtextmapping][key]){
         var selvalue=null
         for(bod in args.annotation.underlying.body){
             if(args.annotation.underlying.body[bod].purpose==key){
                 selvalue=args.annotation.underlying.body[bod].value
             }
         }
-        for(keyy in recogitomappings[key]["data"]){
+        for(keyy in textmappings[curtextmapping][key]["data"]){
         //console.log(keyy)
         option=document.createElement("option")
         option.value=keyy
-        option.text=recogitomappings[key]["data"][keyy]
+        option.text=textmappings[curtextmapping][key]["data"][keyy]
         if(selvalue!=null && keyy==selvalue){
             option.selected="selected"
         }
         input.appendChild(option)
         }
     }
-  }else if(!readOnlyVar && "inputtype" in recogitomappings[key]){
-		input.type=recogitomappings[key]["inputtype"]
+  }else if(!readOnlyVar && "inputtype" in textmappings[curtextmapping][key]){
+		input.type=textmappings[curtextmapping][key]["inputtype"]
 		input.min=1
 	}else if(!readOnlyVar){
 		input.type="text"	
 	}
-  if(!readOnlyVar && "data" in recogitomappings[key] && recogitomappings[key]["inputtype"]=="select"){
+  if(!readOnlyVar && "data" in textmappings[curtextmapping][key] && textmappings[curtextmapping][key]["inputtype"]=="select"){
         var selvalue=null
         for(bod in args.annotation.underlying.body){
             if(args.annotation.underlying.body[bod].purpose==key){
                 selvalue=args.annotation.underlying.body[bod].value
             }
         }
-        for(keyy in recogitomappings[key]["data"]){
+        for(keyy in textmappings[curtextmapping][key]["data"]){
         //console.log(keyy)
         option=document.createElement("option")
         option.value=keyy
-        option.text=recogitomappings[key]["data"][keyy]
+        option.text=textmappings[curtextmapping][key]["data"][keyy]
         if(selvalue!=null && keyy==selvalue){
             option.selected="selected"
         }
@@ -331,7 +331,7 @@ var TextMapWidget2 = function(args) {
 	label.innerHTML=key+": "
 	td1.appendChild(label)
 	td2.appendChild(input)
-  if(!readOnlyVar && "paleocodage" in recogitomappings[key]){
+  if(!readOnlyVar && "paleocodage" in textmappings[curtextmapping][key]){
     var td3=document.createElement('td')
     tr.appendChild(td3)
     var canvas=document.createElement('canvas')
@@ -370,7 +370,7 @@ var TextMapWidget2 = function(args) {
   idspan.appendChild(idlink)
   idlink.innerHTML=args.annotation.id
   container.appendChild(idspan)
-  for(map in recogitomappings){
+  for(map in textmappings[curtextmapping]){
     var curval="";
     for(body of args.annotation.bodies){
 		if(body.purpose==map){

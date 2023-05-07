@@ -1,8 +1,8 @@
 var curnamespace="http://purl.org/cuneiform/"
 
 
-var imagemapping="maicubeda"
-var textmapping="maicubeda"
+var curimagemapping="maicubeda"
+var curtextmapping="maicubeda"
 
 var combined=[
 {"label":"Noun (N)","uri":"http://purl.org/olia/Sumerian.owl#Noun"},
