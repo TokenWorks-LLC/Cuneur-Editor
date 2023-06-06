@@ -1355,9 +1355,9 @@ function formatTransliteration(transliteration) {
                     }
                     result += "<span>&nbsp;</span>"
                 } else {
-                    if (($("#images option:selected").text() in character_postags) && curterm in character_postags[$("#images option:selected").text()] && currentside + "_" + linecounter + "_" + charcounter in character_postags[$("#images option:selected").text()][curterm]) {
-                        titleobj = character_postags[$("#images option:selected").text()][curterm][currentside + "_" + linecounter + "_" + charcounter]
-                    }
+                    //if (($("#images option:selected").text() in character_postags) && curterm in character_postags[$("#images option:selected").text()] && currentside + "_" + linecounter + "_" + charcounter in character_postags[$("#images option:selected").text()][curterm]) {
+                    //    titleobj = character_postags[$("#images option:selected").text()][curterm][currentside + "_" + linecounter + "_" + charcounter]
+                    //}
                     /*console.log(character_postags)
                     console.log($("#images option:selected").text())
                     console.log(curterm)
