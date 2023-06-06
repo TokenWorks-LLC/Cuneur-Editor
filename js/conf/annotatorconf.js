@@ -296,7 +296,7 @@ async function commitTextAnnotationData(){
 }
 
 async function commit3DBBOX(){
-  var users= await api.RepositoryFiles.edit(repositoryid, "js/data/hs23D.js",branch,"var hs23D="+JSON.stringify(hs23D,null,2),"Committed js/hs23D.js")
+	var users= await api.RepositoryFiles.edit(repositoryid, "js/data/3dmodels.js",branch,"var models3D="+JSON.stringify(models3D,null,2),"Committed js/3dmodels.js")
 }
 
 async function saveApprovals(){

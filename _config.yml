@@ -1,8 +1,8 @@
 title: Cuneur - Cuneiform Annotator
 description: > # this means to ignore newlines until "baseurl:"
   This is an instance of the Cuneur - Cuneiform Annotator application. Find out more at https://gitlab.com/fcgl
-baseurl: "/" # the subpath of your site, e.g. /blog
-url: "/" # the base hostname & protocol for your site
+baseurl: "/cuneur-template" # the subpath of your site, e.g. /blog
+url: "https://fcgl.gilab.io/" # the base hostname & protocol for your site
 version: 0.9
 
 # Outputting
