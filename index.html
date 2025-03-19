@@ -88,7 +88,7 @@ ul li {
 
 <div class="wrapper">
   <table width="100%"><tr><td width="13%">
-  <a href="index.html"><img src="assets/cuneiform_annotator_logo_200px.png" alt="Cuneiform Annotator" width="75" height="75"/></a></td><td width="75%"><h1 align="center" style="valign:top">Cuneiform Annotator for the Hilprecht Collection</h1></td><td width="12%"></td></tr></table>
+  <a href="index.html"><img src="assets/images/cuneiform_annotator_logo_200px.png" alt="Cuneiform Annotator" width="75" height="75"/></a></td><td width="75%"><h1 align="center" style="valign:top">Cuneiform Annotator for the Hilprecht Collection</h1></td><td width="12%"></td></tr></table>
 </div>
 Annotator Sources: <select id="sourceSelector" onchange="reloadShuffle()"><option value="localdata">Local Data</option><option value="factgrid">FactGrid</option><option value="wikidata">Wikidata</option></select>
 
@@ -172,7 +172,7 @@ for(url in renderingurls){
     tablecontent+="]' style=\"width:25%;background-color:white;border-radius:25px;\"><figure class=\"col-4@sm picture-item\" data-title=\""+url+"\"><div class=\"aspect aspect--16x9\"><div class=\"aspect__inner\"><a target=\"_blank\" href=\"annotator.html?tabletid="+url+"\">"
     for(vari in renderingurls[url]["variants"]){
         if(renderingurls[url]["variants"][vari]["label"].includes("front")){
-            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='assets/placeholder.png'\" src=\""+renderingurls[url]["variants"][vari]["url"].replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url+"\"/>"
+            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='assets/images/placeholder.png'\" src=\""+renderingurls[url]["variants"][vari]["url"].replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url+"\"/>"
         }
     }
     tablecontent+="</a>"
