@@ -95,7 +95,7 @@ function generateTSDropDownContents(simpleData,tsconf){
   for(data of simpleData["data"]){
     if("document" in data){
       options+="<option value=\""+data["document"]+"\" selected=\"selected\">"
-      if(data["document"] in editstats){
+      if(typeof(editstats)!=='undefined' && editstats!=null && data["document"] in editstats){
         options+=data["documentLabel"]+" ("+editstats[data["document"]]+")</option>"
       }else{
         options+=data["documentLabel"]+"</option>"
