@@ -1,4 +1,4 @@
 ---
-layout: default
+layout: annotatorts
 permalink: /annotatorts.html
 ---
