@@ -102,12 +102,17 @@ Search: <input id="tabletsearch" class="js-shuffle-search" type="text" onkeyup="
 </ul>
 </body>
 <script>
+if(typeof(tsconf)!=='undefined'){
+  sourcesel="<option value=\"localdata\">Local Data</option>"
+  for(entry in tsconf){
+    sourcesel+="<option value=\""+entry+"\">"+tsconf[entry]["label"]+"</option>"
+  }
+  $('#sourceSelector').html(sourcesel)
+}
 function reloadShuffle(){
   theval=$('#sourceSelector').val()
-  if(theval=="factgrid"){
-    getFactGridTablets();
-  }else if(theval=="wikidata"){
-    getWikidataTablets();
+  if(theval in tsconf){
+    getTSTablets(tsconf[theval]);
   }else{
     loadLocalShuffle();
   }
