@@ -59,8 +59,13 @@ function processVariants(simpleData){
       imgs=url["images"].split("||")
       for(img of imgs){
         img=img.trim()
-        variantoptions+="<option value=\""+img.substring(0,img.lastIndexOf("_"))+"\">"+url["documentLabel"]+" "+img.substring(img.lastIndexOf("_"),img.length)+"</option>"
-        varurls.push({"label":url["documentLabel"],"url":img.substring(0,img.lastIndexOf("_"))})
+        if(img.includes("_")){
+            variantoptions+="<option value=\""+img.substring(0,img.lastIndexOf("_"))+"\">"+url["documentLabel"]+" "+img.substring(img.lastIndexOf("_"),img.length)+"</option>"
+            varurls.push({"label":url["documentLabel"]+" "+img.substring(img.lastIndexOf("_"),img.length),"url":img.substring(0,img.lastIndexOf("_"))})
+        }else{
+            variantoptions+="<option value=\""+img+"\">"+url["documentLabel"]+"</option>"
+            varurls.push({"label":url["documentLabel"],"url":img})
+        }
       }
     }
   }
