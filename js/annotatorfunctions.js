@@ -1059,12 +1059,12 @@ function loadVariants(givensources=null) {
         $('#transliterationtextarea').html("No transliteration available for text " + $('#images option:selected').val())
     }
     if(givensources!=null){
-        sources=[]
-        for(sour of givensources){
-            sources.push({"url":sour})
-        }
+        sources=givensources
+        //for(sour of givensources){
+        //    sources.push({"url":sour["url"]})
+        //}
         if(!($('#images option:selected').val() in renderingurls)){
-            renderingurls[$('#images option:selected').val()]={"variants":sources}
+            renderingurls[$('#images option:selected').val()]={"variants":givensources}
         }
         //sources=givensources
     }else if("variants" in renderingurls[$('#images option:selected').val()]){

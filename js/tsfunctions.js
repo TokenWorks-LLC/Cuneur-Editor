@@ -60,7 +60,7 @@ function processVariants(simpleData){
       for(img of imgs){
         img=img.trim()
         variantoptions+="<option value=\""+img.substring(0,img.lastIndexOf("_"))+"\">"+url["documentLabel"]+" "+img.substring(img.lastIndexOf("_"),img.length)+"</option>"
-        varurls.push(img.substring(0,img.lastIndexOf("_")))
+        varurls.push({"label":url["documentLabel"],"url":img.substring(0,img.lastIndexOf("_"))})
       }
     }
   }
