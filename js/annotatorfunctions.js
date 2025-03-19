@@ -1018,7 +1018,7 @@ function reIndexImageAnnotation(ann,page){
 }
 
 
-function loadVariants() {
+function loadVariants(givensources=null) {
     console.log($('#images option:selected').val())
     //console.log(transliterations)
     toappend = ""
@@ -1058,7 +1058,17 @@ function loadVariants() {
         $('#textid').html("" + $('#images option:selected').val() + "")
         $('#transliterationtextarea').html("No transliteration available for text " + $('#images option:selected').val())
     }
-    sources=renderingurls[$('#images option:selected').val()]["variants"]
+    if(givensources!=null){
+        sources=[]
+        for(sour of givensources){
+            sources.push({"url":sour})
+        }
+        //sources=givensources
+    }else if("variants" in renderingurls[$('#images option:selected').val()]){
+        sources=renderingurls[$('#images option:selected').val()]["variants"]
+    }  
+    console.log("GIVEN SOURCES: "+givensources)
+    console.log("SOURCES: "+sources)
     tsources=[]
     annolist={}
     jQuery.ajaxSetup({async:false});
