@@ -161,11 +161,11 @@ for(url of fgresults["data"]){
         for(img of imgs){
           img=img.trim()
           if(img.includes("Front") || img.includes("front") ){
-            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='placeholder.png'\" src=\""+img.replace("_Front","").replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url["documentLabel"]+"\"/>"
+            tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='assets/images/placeholder.png'\" src=\""+img.replace("_Front","").replace("full/full","full/pct:10")+"\" loading=\"lazy\" alt=\""+url["documentLabel"]+"\"/>"
           }
         }
     }else{
-      tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='placeholder.png'\" src=\"placeholder.png\" loading=\"lazy\" alt=\""+url["documentLabel"]+"\"/>"
+      tablecontent+="<img width=\"300\" height=\"200\" onerror=\"this.onerror=null; this.src='assets/images/placeholder.png'\" src=\"assets/images/placeholder.png\" loading=\"lazy\" alt=\""+url["documentLabel"]+"\"/>"
     }
     tablecontent+="</a>"
     tablecontent+="</div></div><figcaption style=\"color:black\" class=\"picture-item__title\"><a target=\"_blank\" href=\"annotatorts.html?ts="+tsid+"&tabletid="+url["document"]+"\" style=\"font-weight:bold;color:black\">"+url["documentLabel"]+"</a>"
