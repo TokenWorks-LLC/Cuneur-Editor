@@ -175,7 +175,7 @@ for(url of fgresults["data"]){
     if(url in transliterations){
       tablecontent+=" <b>(T)</b>"
     }
-    if(url in editstats){
+    if(typeof(editstats)!=='undefined' && editstats!=null && url in editstats){
       tablecontent+=" <b>("+editstats[url]+")</b>"
     }
     tablecontent+="<br/>"
