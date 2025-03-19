@@ -1063,6 +1063,9 @@ function loadVariants(givensources=null) {
         for(sour of givensources){
             sources.push({"url":sour})
         }
+        if(!($('#images option:selected').val() in renderingurls)){
+            renderingurls[$('#images option:selected').val()]={"variants":sources}
+        }
         //sources=givensources
     }else if("variants" in renderingurls[$('#images option:selected').val()]){
         sources=renderingurls[$('#images option:selected').val()]["variants"]
