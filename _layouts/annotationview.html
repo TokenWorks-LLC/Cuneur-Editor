@@ -1,20 +1,84 @@
 <html>
 <head>
+<script type="text/javascript" src="js/paleocodelist.js"></script>
+<script>
+var paleocodelist=Object.keys(paleocodeoccmap)
+</script>
 <script src="js/paleocodes.js"></script>
 <script src="js/paleocodesSign.js"></script>
+<script src="js/paleocodesVars.js"></script>
+<script src="js/lib/gitbeaker.js"></script>
+<script src="js/groupfile.js"></script>
+<script src="js/conf/annotatorconf.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/natural.js"></script>
+
+<script src="js/lib/dataTables.cellEdit.js"></script>
 <script src="js/lib/saveTextAsFile.js"></script>
 <title>Overview Signs</title>
 </head>
+<style>
+.odd{
+    background-color:d3d3d3;
+} 
+.even{
+    background-color:ffffff;
+}    
+</style>
+<script>
+var dattable=null;
+var currentid=null;
+var scalestring=""
+function updateScale(){
+    scalestring=" "
+    if(document.getElementById("scalewidth").value>0){
+        scalestring+="width:"+document.getElementById("scalewidth").value
+    }
+    if(document.getElementById("scaleheight").value>0){
+        if(scalestring!=" "){
+            scalestring+=";"
+        }
+        scalestring+="height:"+document.getElementById("scaleheight").value
+    }
+    scalestring+=" ";
+    if(currentid!=null){
+        loadImages(currentid)
+    }
+}    
+function noScale(){
+    scalestring=""
+    if(currentid!=null){
+        loadImages(currentid)
+    }
+}
+</script>
 <body>
 <h1>Annotation results</h1>
-Signreadings: <select id="signreadings" onchange="loadImages('signreadings')"></select><button id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemap[document.getElementById('signreadings').value]),'json','selectedreadingimages')">Save Selected Reading Image URLs</button><a href="js/paleocodes.js">Download all sign reading image URLs</a><br/>
-SignNames: <select id="signNames" onchange="loadImages('signNames')"></select><button onclick="" id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemapSigns[document.getElementById('signNames').value]),'json','selectedSignImages')">Save Selected Sign Image URLs</button><a href="js/paleocodesSign.js">Download all sign name images</a>
+Scale Height: <input type="number" min=0 id="scaleheight" value="0"/>Width: <input type="number" min=0 id="scalewidth" value="0"/><button onclick="updateScale()">Update Scale</button><button onClick="noScale()">No Scaling</button><br/>
+Signreadings: <select id="signreadings" onchange="loadImages('signreadings')"></select><button id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemap[document.getElementById('signreadings').value]),'.json','selectedreadingimages')">Save Selected Reading Image URLs (JSON)</button><button id="saveCurrentReadings" onclick="saveTextAsFile(jsontoCSV(paleocodemap[document.getElementById('signreadings').value],document.getElementById('signreadings').value),'.csv','selectedreadingimages')">Save Selected Reading Image URLs (CSV)</button><a href="js/paleocodes.js">Download all sign reading image URLs (JS)</a>&nbsp;<a href="js/paleocodes.csv">Download all sign reading image URLs (CSV)</a><br/>
+SignNames: <select id="signNames" onchange="loadImages('signNames')"></select><button id="saveCurrentReadings" onclick="saveTextAsFile(JSON.stringify(paleocodemapSigns[document.getElementById('signNames').value]),'.json','selectedSignImages')">Save Selected Sign Image URLs (JSON)</button><button id="saveCurrentReadings" onclick="saveTextAsFile(jsontoCSV(paleocodemapSigns[document.getElementById('signNames').value],document.getElementById('signreadings').value),'.csv','selectedSignImages')">Save Selected Sign Image URLs (CSV)</button><a href="js/paleocodesSign.js">Download all sign name images (JS)</a>&nbsp;<a href="js/paleocodesSign.csv">Download all sign name images (CSV)</a><br/>
+SignVariants: <select id="signVariants" onchange="loadImages('signVariants')"></select><button id="saveCurrentVariants" onclick="saveTextAsFile(JSON.stringify(paleocodemapvarSigns[document.getElementById('signVariants').value]),'.json','selectedSignImages')">Save Selected Sign Variant URLs (JSON)</button><button id="saveCurrentVariants" onclick="saveTextAsFile(jsontoCSV(paleocodemapvarSigns[document.getElementById('signVariants').value],document.getElementById('signreadings').value),'.csv','selectedSignImages')">Save Selected Sign Variant URLs</button><a href="js/paleocodesVars.js">Download all sign variant images</a>&nbsp;<a href="js/paleocodesVars.csv">Download all sign variant images (CSV)</a>
+<br/><button id="saveGroupsInGit" onclick="saveGroupsGit()">Save Groups</button>
 <table id="readingimages" style="overflow-y:auto; height: 80%;">
 
 </table>
 <script>
 selitems=""
-imagespersign=12
+imagespersign=1
 for(imgname in paleocodemap){
     selitems+="<option value=\""+imgname+"\">"+imgname+" ["+paleocodemap[imgname]["images"].length/imagespersign+"]</option>"
 }
@@ -24,34 +88,172 @@ for(imgname in paleocodemapSigns){
     selitems2+="<option value=\""+imgname+"\">"+imgname+" ["+paleocodemapSigns[imgname]["images"].length/imagespersign+"]</option>"
 }
 document.getElementById("signNames").innerHTML=selitems2
+selitems3=""
+for(imgname in paleocodeSignIDs){
+    selitems3+="<option value=\""+imgname+"\">"+imgname+" ["+paleocodeSignIDs[imgname]["images"].length/imagespersign+"]</option>"
+}
+document.getElementById("signVariants").innerHTML=selitems3
+
+function jsontoCSV(res,signid){
+    result="translit;filename;side;line;charindex;url\n"
+    for(rimg in res["images"]){
+        result+=signid+";"+res["images"][rimg]["filename"]+";"+res["images"][rimg]["side"]+";"+res["images"][rimg]["line"]+";"+res["images"][rimg]["charindex"]+";"+res["images"][rimg]["url"]+"\n"
+    }
+    return result
+}
+function stripHtml(html)
+{
+   let tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
+
+function tableContentsToJSON(){
+    result={currentimage:[]}
+    console.log(dattable)
+    result={}
+    console.log(dattable.api().rows().data().toArray())
+    for(res of dattable.api().rows().data().toArray()){
+        ident=stripHtml(res[0])
+        image=res[1].substring(res[1].indexOf("src=\"")+5,res[1].indexOf("\" loading="))
+        group=res[2]
+        if(group.includes(";")){
+            groupss=group.split(";")
+        }else{
+            groupss=[group]
+        }
+        result[image]={"label":ident,"image":image,"group":groupss}
+    }
+    return result
+}
+
+
+function saveGroupsGit(){
+    res=tableContentsToJSON()
+    groups[currentimage]=res
+    commitGroupFile(groups)
+}
+
+function myCallbackFunction (updatedCell, updatedRow, oldValue) {
+    console.log("The new value for the cell is: " + updatedCell.data());
+    console.log("The values for each cell in that row are: " + updatedRow.data());
+}
+
+function destroyTable() {
+    if ($.fn.DataTable.isDataTable('#readingimages')) {
+        dattable.api().destroy();
+        dattable.api().MakeCellsEditable("destroy");
+    }
+}
+
+var currentimage=null
+var currentimagejson=null
+var currentmap=null
 function loadImages(id){
+    if(dattable!=null){
+        res=tableContentsToJSON()
+        groups[currentimage]=res
+        //res=parseHTMLTableElem(document.getElementById("readingimages"))
+        console.log(res)
+        console.log(groups)
+    }
     imgname=document.getElementById(id).value
-    tabcontent=""
+    currentimage=imgname
+    currentid=id
+    currentimagejson=[]
+    tabcontent="<thead><tr><th>Reference</th><th>Image</th><th>Group</th></tr></thead><tbody>"
+    curgroups=null
+    if(imgname in groups){
+        curgroups=groups[imgname]
+    }
     if(id=="signreadings"){
         themap=paleocodemap
+    }else if(id=="signVariants"){
+        themap=paleocodeSignIDs
     }else{
         themap=paleocodemapSigns
     }
     if(imgname in themap && "images" in themap[imgname]){
-        tabcontent="<tr>"
+        
         var rowcounter=0
         var start=true
         for(iiifpath in themap[imgname]["images"]){
-            if(start){
-                tabcontent+="<td>"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</td><td>"
-                start=false
+            grouptoadd=null
+            console.log(imgname)
+            console.log(groups)
+            console.log(themap[imgname]["images"][iiifpath]["url"])
+            console.log(imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"])
+            if(imgname in groups && themap[imgname]["images"][iiifpath]["url"] in groups[imgname]){
+                grouptoadd=groups[imgname][themap[imgname]["images"][iiifpath]["url"]]["group"]
+                console.log(grouptoadd)
+                console.log(imgname+" - "+themap[imgname]["images"][iiifpath]["url"])
             }
-            if(rowcounter>imagespersign-1){
-                rowcounter=0
-                tabcontent+="</td></tr><tr><td>"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</td><td>"
+            tabcontent+="<tr>"
+            //if(start){
+            tabcontent+="<td><a href=\"https://mainzed.pages.gitlab.rlp.net/forschungsprojekte/htproject/cuneur-ht/annotator.html?tabletid="+themap[imgname]["images"][iiifpath]["filename"].replace(".json","").substring(0,themap[imgname]["images"][iiifpath]["filename"].replace(".json","").indexOf("_"))+"\" target=\"_blank\">"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</a></td>"
+            //start=false
+            tabcontent+="<td><img style='border:2px solid #FFFFFF; "+scalestring+"' src=\""+themap[imgname]["images"][iiifpath]["url"]+"\" loading=\"lazy\"/></td>"
+
+            //}
+            //if(rowcounter>imagespersign-1){
+                //rowcounter=0
+                //tabcontent+="</td>"
+            if(grouptoadd!=null){
+                gitems=""
+                for(item in grouptoadd){
+                    gitems+=grouptoadd[item]+"; "
+                }
+                gitems=gitems.substring(0,gitems.length-2)
+                tabcontent+="<td>"+gitems+"</td>"
+            }else{
+                tabcontent+="<td>no group</td>"
             }
-            tabcontent+="<img style='border:2px solid #FFFFFF' src=\""+themap[imgname]["images"][iiifpath]["url"]+"\" loading=\"lazy\"/>"
-            rowcounter+=1
+                //tabcontent+="</tr>"//<tr><td><a target=\"_blank\" href=\"https://mainzed.pages.gitlab.rlp.net/forschungsprojekte/htproject/cuneur-ht/annotator.html?tabletid="+themap[imgname]["images"][iiifpath]["filename"].replace(".json","").substring(0,themap[imgname]["images"][iiifpath]["filename"].replace(".json","").indexOf("_"))+"\">"+imgname+" "+themap[imgname]["images"][iiifpath]["filename"].replace(".json","")+" Line "+themap[imgname]["images"][iiifpath]["line"]+" Index "+themap[imgname]["images"][iiifpath]["charindex"]+"</a></td><td>"
+            //}
+                        //rowcounter+=1
+            tabcontent+="</tr>"
         }
-        tabcontent+="</td></tr>"
+        /*tabcontent+="</td>"
+        if(grouptoadd!=null){
+            gitems=""
+            for(item in grouptoadd){
+                gitems+=grouptoadd[item]+"; "
+            }
+            gitems=gitems.substring(0,gitems.length-2)
+            tabcontent+="<td>"+gitems+"</td>"
+        }else{
+            tabcontent+="<td>no group</td>"
+        }*/
+        tabcontent+="</tr>"
     }
+    tabcontent+="</tbody>"
+    destroyTable()
     document.getElementById('readingimages').innerHTML=tabcontent
-}    
+    console.log(tabcontent)
+    dattable=$('#readingimages').dataTable({ 
+		buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape'
+            }
+        ],        
+		bDestroy: true,
+	    lengthMenu: [[10, 25, 100, -1], [10, 25, 100, "All"]],
+	    ordering: true,
+	    order: [],
+        select: {
+            style: 'os',
+            selector: 'td:first-child'
+        }
+    });
+    dattable.api().MakeCellsEditable({
+        "onUpdate": myCallbackFunction,
+        "columns": [2]
+    });
+} 
 </script>
 </body>
 </html>
