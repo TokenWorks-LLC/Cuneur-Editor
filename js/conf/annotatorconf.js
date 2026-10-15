@@ -237,7 +237,19 @@ var presenter = null;
 
 var annos3d={};
 
+// Some catalog layouts do not load the optional local-photo module.
+function catalogSaveAllowed() {
+  return typeof LocalAnnotations === 'undefined' || LocalAnnotations.canSaveCatalog();
+}
+
+function guardCatalogSave() {
+  if (catalogSaveAllowed()) return true;
+  LocalAnnotations.catalogSaveBlocked();
+  return false;
+}
+
 async function saveTransliteration(translitid,translits){
+    if (!guardCatalogSave()) return false;
     var users= await api.RepositoryFiles.edit(repositoryid, "js/data/transliterations.js",branch,"var transliterations="+JSON.stringify(translits,null,2),"Committed Transliteration "+translitid)
 }
 
@@ -256,11 +268,14 @@ async function getTextAnnotation(path){
 }
 
 async function commitData(filename,annotations){
+    if (!guardCatalogSave()) return false;
+    var content = JSON.stringify(annotations,null,2);
     try{
-    var users= await api.RepositoryFiles.create(repositoryid, "result/"+filename+".json",branch,JSON.stringify(annotations,null,2),"Committed "+filename+".json")
+    var users= await api.RepositoryFiles.create(repositoryid, "result/"+filename+".json",branch,content,"Committed "+filename+".json")
       $('#saveannotationsmessage').html("Annotations for "+filename+" have been saved in Git!")
     }catch (e) {
-    var users= await api.RepositoryFiles.edit(repositoryid, "result/"+filename+".json",branch,JSON.stringify(annotations,null,2),"Committed "+filename+".json")
+    if (!guardCatalogSave()) return false;
+    var users= await api.RepositoryFiles.edit(repositoryid, "result/"+filename+".json",branch,content,"Committed "+filename+".json")
       $('#saveannotationsmessage').html("Annotations for "+filename+" have been saved in Git!")
     }
     //reinit(null) 
@@ -268,38 +283,50 @@ async function commitData(filename,annotations){
 }
 
 async function commitData(){
+    if (!guardCatalogSave()) return false;
+    var filename = $('#imageside option:selected').text();
+    var content = JSON.stringify(curanno,null,2);
     console.log(curanno)
 	$('#saveInGit').prop("disabled",true);
 	if(curanno!={} && curanno!=[]){
 		try{
-			var users= await api.RepositoryFiles.create(repositoryid, "result/"+$('#imageside option:selected').text()+".json",branch,JSON.stringify(curanno,null,2),"Committed "+$('#imageside option:selected').text()+".json")
+			var users= await api.RepositoryFiles.create(repositoryid, "result/"+filename+".json",branch,content,"Committed "+filename+".json")
 			$('#saveannotationsmessage').html("Annotations for "+$('#imageside option:selected').text()+" have been saved in Git!")
 		}catch (e) {
-			var users= await api.RepositoryFiles.edit(repositoryid, "result/"+$('#imageside option:selected').text()+".json",branch,JSON.stringify(curanno,null,2),"Committed "+$('#imageside option:selected').text()+".json")
+			if (!guardCatalogSave()) return false;
+			var users= await api.RepositoryFiles.edit(repositoryid, "result/"+filename+".json",branch,content,"Committed "+filename+".json")
 			$('#saveannotationsmessage').html("Annotations for "+$('#imageside option:selected').text()+" have been saved in Git!")
+		}finally{
+			if (typeof LocalAnnotations !== 'undefined') LocalAnnotations.catalogSaveFinished();
+			else $('#saveInGit').prop("disabled",false);
 		}
 		//reinit(null) 
-		$('#saveInGit').prop("disabled",false);
 		console.log(users)
 	}
 }
 
 async function commitTextAnnotationData(){
+    if (!guardCatalogSave()) return false;
+    var filename = $('#images option:selected').val();
+    var content = JSON.stringify(curanno,null,2);
     try{
-    var users= await api.RepositoryFiles.create(repositoryid, "resulttextanno/"+$('#images option:selected').val()+".json",branch,JSON.stringify(curanno,null,2),"Committed "+$('#images option:selected').val()+".json")
+    var users= await api.RepositoryFiles.create(repositoryid, "resulttextanno/"+filename+".json",branch,content,"Committed "+filename+".json")
       $('#saveannotationsmessage').html("Text Annotations for "+$('#images option:selected').val()+" have been saved in Git!")
     }catch (e) {
-    var users= await api.RepositoryFiles.edit(repositoryid, "resulttextanno/"+annotationFileFromImageName($('#images option:selected').val())+".json",branch,JSON.stringify(curanno,null,2),"Committed "+$('#images option:selected').val()+".json")
+    if (!guardCatalogSave()) return false;
+    var users= await api.RepositoryFiles.edit(repositoryid, "resulttextanno/"+annotationFileFromImageName(filename)+".json",branch,content,"Committed "+filename+".json")
       $('#saveannotationsmessage').html("Text Annotations for "+$('#images option:selected').val()+" have been saved in Git!")
     } 
     console.log(users)
 }
 
 async function commit3DBBOX(){
+    if (!guardCatalogSave()) return false;
 	var users= await api.RepositoryFiles.edit(repositoryid, "js/data/3dmodels.js",branch,"var models3D="+JSON.stringify(models3D,null,2),"Committed js/3dmodels.js")
 }
 
 async function saveApprovals(){
+    if (!guardCatalogSave()) return false;
     tabletnumber=$('#images option:selected').val()
     side=$('#imageside option:selected').text().replace(".png","").replace(tabletnumber+"_","")
     if(!(tabletnumber in approvals)){

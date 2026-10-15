@@ -25,6 +25,8 @@
   <script type="text/javascript" src="js/conf/annotatorconf.js"></script>
   <script type="text/javascript" src="js/conf/mappingtemplates.js"></script>
   <script type="text/javascript" src="js/annotatorfunctions.js"></script>
+  <script src="js/localannotationformat.js"></script>
+  <script src="js/localannotations.js"></script>
 <style>
 datalist {
   display: flex;
@@ -175,9 +177,20 @@ datalist {
     <div class="row">
       <div class="col-md-6" role="main">
 Tablet: <select id="images" onchange="loadVariants()"></select> Side: <select id="imageside" onchange="viewer.goToPage(document.getElementById('imageside').selectedIndex)"></select><!--onchange="reinit(null)"-->
-<button id="saveAnnotations" onclick="saveTextAsFile(JSON.stringify(curanno),'json','anno')">Export Annotations</button>
+<button id="saveAnnotations" onclick="LocalAnnotations.exportFile()">Export Annotations</button>
 <button id="showTransliteration" onClick='document.getElementById("transliterationdialog").show();'>Transliteration</button><button id="showTranslation" onClick='document.getElementById("translationdialog").show();'>Translation</button><button id="highlightinconsistencies" onclick="highlightAnnotationsByTransliterationInconsistency()">Highlight Inconsistencies</button><!--<button id="showPaleoCode" onClick='document.getElementById("paleocodedialog").show();'>PaleoCodes</button>--><a id="referencelink" href="#"></a>&nbsp;Annotation Mode:<select id="annomode"><option value="sign">Sign</option><option value="wedge">Wedge</option></select><br/>
 <!--Tagsets: CharacterSet: <input type="radio" id="characterset"> LinguisticAnnotation: <input type="radio" id="linguisticset"/>-->
+<details id="local-image-tools">
+  <summary>Local image upload and annotation import</summary>
+  <label for="local-image-upload">Tablet photo (PNG/JPEG):</label>
+  <input id="local-image-upload" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+  <label for="local-annotation-import">Import annotations (.json):</label>
+  <input id="local-annotation-import" type="file" accept="application/json,.json" disabled>
+  <button id="catalog-mode" type="button" hidden>Return to tablet catalog</button>
+  <p id="local-image-details" style="margin:8px 0"></p>
+  <p id="local-file-status" role="status" aria-live="polite" style="margin:8px 0"></p>
+  <small>Click OK to save each label or box edit before exporting. Import replaces current annotations. Keep the unchanged photo with its JSON file.</small>
+</details>
 <script>
 
 const queryString = window.location.search;
@@ -241,6 +254,7 @@ function reload3DURLs(){
 }
 
 async function saveTransliterationJSON(){
+  if (!guardCatalogSave()) return;
   console.log($("#transliterationtextarea").text())
   htmltext=$("#transliterationtextarea").html().replaceAll("<br>","\n").replaceAll("<br/>","\n").replaceAll(/&nbsp;/g,' ')
   savetext=$(htmltext).text()
@@ -250,6 +264,7 @@ async function saveTransliterationJSON(){
 }
 
 async function saveAnnotations(){
+  if (!guardCatalogSave()) return;
   console.log($("#transliterationtextarea").text())
   htmltext=$("#transliterationtextarea").html().replaceAll("<br>","\n").replaceAll("<br/>","\n").replaceAll(/&nbsp;/g,' ')
   savetext=$(htmltext).text()
@@ -259,6 +274,7 @@ async function saveAnnotations(){
 }
 
 async function saveTransliterationAnnotationJSON(){
+  if (!guardCatalogSave()) return;
   console.log(r.getAnnotations())
   console.log(curtextanno)
   curtextanno=r.getAnnotations()
@@ -310,6 +326,8 @@ function addTransliterationOverlay(fullScreen){
 }
 
 $(document).ready(function () {
+      // Register local tools before starting any remote catalog work.
+      LocalAnnotations.initialize();
       $('#images').selectize({
           sortField: 'text',
           maxOptions: 5000
@@ -319,7 +337,7 @@ $(document).ready(function () {
           maxOptions: 5000
       });
       
-      loadVariants();
+      if (!LocalAnnotations.isLocalMode()) loadVariants();
   });
 
   var options=""
@@ -349,6 +367,7 @@ $(document).ready(function () {
   var anno;
   var annolist;
   window.onload = function() {
+    if (LocalAnnotations.isLocalMode()) return;
     sources=renderingurls[$('#images option:selected').val()]["variants"]
     tsources=[]
     annolist={}
@@ -358,6 +377,7 @@ $(document).ready(function () {
       tsources.push({"type":"image","url":src["url"]})
       annolist[src["label"]+".json"]=[]
       $.getJSON(gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+encodeURIComponent(src["label"]+".json")+"/raw?ref="+branch+"&access_token="+gitlabtoken, function(result){
+        if (LocalAnnotations.isLocalMode()) return;
       console.log(result)
         annotations=[]
         for(ann in result){
@@ -401,6 +421,7 @@ $(document).ready(function () {
     });
     addTransliterationOverlay(viewer.isFullPage())
     viewer.addHandler('pre-full-page', function(event){
+      if (LocalAnnotations.isLocalMode()) return;
       console.log("FULLSCREEN HANDLER: ")
       console.log(event)
       if(event.fullPage){
@@ -448,6 +469,7 @@ $(document).ready(function () {
 
 
 function initAnnotationsForPage(page){
+    if (LocalAnnotations.isLocalMode()) return;
     addTransliterationOverlay(viewer.isFullPage())
     console.log("Page")
     console.log(page)
@@ -468,6 +490,7 @@ function initAnnotationsForPage(page){
       reIndexImageAnnotation(result[ann],page["page"])
     }
     anno.on('createAnnotation', function(a) {
+        if (LocalAnnotations.isLocalMode()) return;
         console.log(a)
         console.log(JSON.stringify(a))
         curanno[a["id"]]=a
@@ -476,6 +499,7 @@ function initAnnotationsForPage(page){
         }
     });
     anno.on('mouseEnterAnnotation', function(annotation, event) {
+        if (LocalAnnotations.isLocalMode()) return;
         console.log(annotation["id"])
         console.log(curimgindex)
         if(annotation["id"] in curimgindex){
@@ -487,6 +511,7 @@ function initAnnotationsForPage(page){
         }
     });
     anno.on('mouseLeaveAnnotation', function(annotation, event) {
+        if (LocalAnnotations.isLocalMode()) return;
         if(annotation["id"] in curimgindex){
           $("span[name='"+curimgindex[annotation["id"]]+"']").each(function(i,el){
               $(el).css({"backgroundColor": "#f7f7f9", "color": "#bd4147","border": "0px"})
@@ -494,6 +519,7 @@ function initAnnotationsForPage(page){
         }
     });
     anno.on('selectAnnotation', function(annotation) {
+        if (LocalAnnotations.isLocalMode()) return;
         if(annotation["id"] in curimgindex){
           $("span[name='"+curimgindex[annotation["id"]]+"']").each(function(i,el){
               $(el).css({"backgroundColor": "#f7f7f9", "color": "#bd4147","border": "0px"})
@@ -501,9 +527,11 @@ function initAnnotationsForPage(page){
         }
     });
     anno.on('deleteAnnotation', function(a) {
+      if (LocalAnnotations.isLocalMode()) return;
       delete curanno[a["id"]]
     });
     anno.on('updateAnnotation', function(a) {
+      if (LocalAnnotations.isLocalMode()) return;
       curanno[a["id"]]=a
       reIndexImageAnnotation(a,viewer.currentPage)
     });
@@ -845,34 +873,29 @@ function onLeaveSpot(id) {
 
 function loadAllSpots(){
   console.log("Load All Spots")
-  surfaces={"03_front":5.0,"06_back":-5.0,"02_left":0.0,"04_right":0.0,"01_top":0.0,"05_bottom":0.0}
-  spots={}
-  $.ajaxSetup({
-    async: false
+  var surfaces={"03_front":5.0,"06_back":-5.0,"02_left":0.0,"04_right":0.0,"01_top":0.0,"05_bottom":0.0}
+  var spots={}
+  var modelName=$("#3dimages").text()
+  var modelUrl=$("#3dimages").val()
+  // Slow or failed 3D requests must not block input in the local photo editor.
+  var requests=Object.keys(surfaces).map(function(surface){
+    return Promise.resolve($.ajax({
+      url: gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+modelName+"_"+surface+".png.json/raw?ref="+branch+"&access_token="+gitlabtoken,
+      dataType: 'json', async: true
+    })).then(function(res){
+      if(modelUrl!==$("#3dimages").val()) return;
+      spots=convert2DAnnoTo3D(res,spots,surfaces[surface],!surface.includes("back"))
+    }).catch(function(error){ console.warn('A 3D annotation surface could not load.', error); });
   });
-  for(surf in surfaces){
-    console.log("Loading.... "+gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+$("#3dimages").text()+"_"+surf+".png.json/raw?ref="+branch+"&access_token="+gitlabtoken)
-    $.getJSON(gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+$("#3dimages").text()+"_"+surf+".png.json/raw?ref="+branch+"&access_token="+gitlabtoken,
-      function(res){
-      console.log("Res: "+res)
-      if(surf.includes("back")){
-        spots=convert2DAnnoTo3D(res,spots,surfaces[surf],false)
-      }else{
-        spots=convert2DAnnoTo3D(res,spots,surfaces[surf],true)
-      }
-      
-    }).fail(function(jqXHR, textStatus, errorThrown) { console.log('getJSON request failed! ' + textStatus); });
-  }
-  $.ajaxSetup({
-    async: true
-  });
+  return Promise.all(requests).then(function(){
+  if(modelUrl!==$("#3dimages").val()) return;
   console.log("Found spots: ")
   console.log(spots)
   presenter = new Presenter("draw-canvas");
   presenter._onPickedSpot = onPickedSpot;
 	presenter.setScene({
 		meshes: {
-			"mesh_1" : { url: $("#3dimages").val() },
+			"mesh_1" : { url: modelUrl },
       "Cube": {url: "models/cube.ply"},
       "Sphere": {url: "models/sphere.ply"}
 		},
@@ -895,9 +918,13 @@ function loadAllSpots(){
 			}
 		}
 	});
+  }).catch(function(error){
+    console.warn('The 3D model could not load. Local photo annotation is still available.', error);
+  });
 }
 
 function setup3dhop() {
+  try {
   if($("#3dimages").text() in models3D && !("bbox" in models3D[$("#3dimages").text()])){
     	presenter = new Presenter("draw-canvas");
   //console.log("load 3d model")
@@ -933,9 +960,14 @@ function setup3dhop() {
     //
   }
   loadAllSpots()
+  } catch (error) {
+    console.warn('The 3D model could not load. Local photo annotation is still available.', error);
+  }
 }
 
 $(document).ready(function(){
+	// The 3D viewer is independent of local photo controls and the 2D editor.
+	try {
 	init3dhop();
 	 var interval, id, ismousedown;
 	 var button = 0;
@@ -980,6 +1012,9 @@ $('#toolbar2 img')
             button = 0;
         });
 	setup3dhop();
+	} catch (error) {
+	  console.warn('The 3D viewer could not initialize. Local photo annotation is still available.', error);
+	}
 
 });
 </script>

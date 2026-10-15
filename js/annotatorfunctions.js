@@ -1,6 +1,13 @@
+var character_postags = {};
+
 visible = true
 
 var osdargs
+
+// This file is also used by layouts that do not load the optional local-photo tools.
+function isLocalPhotoActive() {
+  return typeof LocalAnnotations !== 'undefined' && LocalAnnotations.isLocalMode();
+}
 
 var TextMapWidget = function(args) {
 
@@ -16,10 +23,10 @@ var TextMapWidget = function(args) {
             type: 'TextualBody',
             purpose: evt.target.id,
             //dimensions: viewer.world.getItemAt(0).getContentSize(), 
-            value: evt.srcElement.value
+            value: evt.target.value
         });
     }else{
-        args.annotation.underlying.body[removeindex].value=evt.srcElement.value
+        args.annotation.underlying.body[removeindex].value=evt.target.value
         args.annotation.underlying.body[removeindex].dimensions=viewer.world.getItemAt(0).getContentSize()
     }
   }
@@ -113,7 +120,7 @@ var TextMapWidget = function(args) {
       }
 	  }
     if(!readOnlyVar){
-	    input.addEventListener('keyup',addTag)
+	    input.addEventListener('input',addTag)
     }
   }
 
@@ -159,6 +166,7 @@ var TextMapWidget = function(args) {
   }
 
   var recreateAnnoTable=function(args,table,category,mappings){
+    mappings = mappings.config || mappings;
     for(map in mappings){
         console.log(mappings[map])
         console.log(category)
@@ -186,7 +194,7 @@ var TextMapWidget = function(args) {
   idlink=document.createElement('a')
   idlink.setAttribute('href',location.protocol + '//' + location.host + location.pathname+"?tabletid="+$('#images option:selected').val()+"&side="+$('#imageside option:selected').text()+"&annotations="+args.annotation.id)
   idspan.appendChild(idlink)
-  idlink.innerHTML=args.annotation.id
+  idlink.textContent=args.annotation.id
   container.appendChild(idspan)
   annotypespan=document.createElement('span')
   fieldset=document.createElement("fieldset")
@@ -387,6 +395,7 @@ var TextMapWidget2 = function(args) {
 
 var lastItemBeforeFatCross=null
 function arrangeFatCross(){
+  if (isLocalPhotoActive()) return;
         try{
         viewer.destroy()
         anno.destroy()
@@ -852,6 +861,7 @@ function annotationFileFromImageName(curname){
 }
 
 function reinitOSD(){
+    if (isLocalPhotoActive()) return;
     try{
         viewer.destroy()
         anno.destroy()
@@ -891,8 +901,10 @@ function reinitOSD(){
         })*/
     ]}
     anno = OpenSeadragon.Annotorious(viewer,annoconfig);
+    var catalogAnno = anno;
     getCurrentUser().then(function(user){
-        anno.setAuthInfo({
+        if (isLocalPhotoActive() || anno !== catalogAnno) return;
+        catalogAnno.setAuthInfo({
         id: user["id"],
         displayName: user["username"]
         });
@@ -909,6 +921,7 @@ function reinitOSD(){
 
 var param2=""
 function reinit(param) {
+    if (isLocalPhotoActive()) return;
     param = $('#imageside option:selected').val()
     param2 = $('#imageside option:selected').text()
     $('#highlightline').val("-1")
@@ -937,6 +950,7 @@ function reinit(param) {
         document.getElementById('transliterationtextarea').innerHTML=newtrans
     }
     $.getJSON(gitlabhost + "/api/v4/projects/" + repositoryid + "/repository/files/resulttextanno%2F" + encodeURIComponent($('#images option:selected').val() + ".json") + "/raw?ref=" + branch + "&access_token=" + gitlabtoken, function(result) {
+        if (isLocalPhotoActive()) return;
         curtextanno=result
         annotations = []
         for (ann in result) {
@@ -944,6 +958,7 @@ function reinit(param) {
         }
         loadRecogito("transliterationtextarea",newtrans,annotations)
     }).fail(function(jqXHR, textStatus, errorThrown) {
+        if (isLocalPhotoActive()) return;
         loadRecogito("transliterationtextarea",newtrans,null)
     })
     //$('#translationtextarea').html(formatTranslation(transliterations[$('#images option:selected').val()].replaceAll("\n", "<br>")))
@@ -1019,6 +1034,7 @@ function reIndexImageAnnotation(ann,page){
 
 
 function loadVariants(givensources=null) {
+    if (isLocalPhotoActive()) return;
     console.log($('#images option:selected').val())
     //console.log(transliterations)
     toappend = ""
@@ -1080,6 +1096,7 @@ function loadVariants(givensources=null) {
       tsources.push({"type":"image","url":src["url"]})
       annolist[src["label"]+".json"]=[]
       $.getJSON(gitlabhost+"/api/v4/projects/"+repositoryid+"/repository/files/result%2F"+encodeURIComponent(src["label"]+".json")+"/raw?ref="+branch+"&access_token="+gitlabtoken, function(result){
+        if (isLocalPhotoActive()) return;
         console.log(result)
         indexedchars = 0
         indexedhiglighted = false
